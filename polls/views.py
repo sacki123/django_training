@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
+from django.views import generic
 from .models import question, choice
 
 # Create your views here.
@@ -53,7 +54,20 @@ def vote(request, question_id):
         selected_choice.vote += 1
         selected_choice.save()
     return HttpResponseRedirect(reverse('polls:results', args=(question1.id,)))
-    
+    # return render(request,"polls/results.html",{'question':question1})
 def results(request, question_id):
     question1 = get_object_or_404(question, pk=question_id) 
     return render(request, 'polls/results.html', {'question': question1})
+class Viewdetail(generic.DetailView):
+    model = question
+    template_name = "polls/detail.html"
+class Viewresult(generic.DetailView):
+    model = question
+    template_name = "polls/results.html"
+class Viewlist(generic.ListView):
+    model = question
+    template_name = "polls/index.html"
+    context_object_name = "latest_question_list"
+    def getlist(self):
+        return question.objects.all()
+
