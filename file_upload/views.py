@@ -3,10 +3,10 @@ from django.http import HttpResponse
 from .forms import file_upload_form 
 # Create your views here.
 def file_upload_view(request):
-    if request.POST == "POST":
+    if request.method == "POST":
         form = file_upload_form(request.POST,request.FILES)
         if form.is_valid():
-            upload(request.FILES['file'])
+            upload(request.FILES['files'])
             return HttpResponse("<h1>UPload Thành Công</h1>")
         else:
             return HttpResponse("<h1>UPload Không Thành Công</h1>")
@@ -15,4 +15,4 @@ def file_upload_view(request):
 def upload(f):
     files = open(f.name,'wb+')
     for chunk in f.chunks():
-        f.write(chunk)        
+        files.write(chunk)        
