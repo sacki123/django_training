@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'paginator.apps.PaginatorConfig',
     'file_upload.apps.FileUploadConfig',
     'user_auth.apps.UserAuthConfig',
     'polls.apps.PollsConfig',
