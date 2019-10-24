@@ -4,7 +4,7 @@ from .models import Customer
 # Create your views here.
 def listing(request):
     customer_list = Customer.objects.all()
-    paginator = Paginator(customer_list,7)
+    paginator = Paginator(customer_list,5)
     page_number = request.GET.get('page')
     try:
         customers = paginator.page(page_number)
