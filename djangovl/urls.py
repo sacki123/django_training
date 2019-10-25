@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^user/',include('user_auth.urls')),
     url(r'^upload/',include('file_upload.urls')),
     url(r'^pages/',include('paginator.urls')),
+    url(r'^login/',include('login.urls')),
 ]
