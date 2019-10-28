@@ -5,6 +5,6 @@ app_name = 'login'
 urlpatterns = [
     url(r'^$',views.loginView,name='login'),
     url(r'logout/',views.logoutView,name='logout'),
-    url(r'create/',views.formView),
+    url(r'greeting/',views.formView),
     
 ]

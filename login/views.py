@@ -11,7 +11,7 @@ def loginView(request):
                 if login_form.cleaned_data['password'] == '123':
                     user = login_form.cleaned_data['user']
                     request.session['user'] = user
-                    request.session.set_expiry(15)
+                    request.session.set_expiry(300)
     else:
         login_form = Loginform()
     return render(request,'login/main.html',{'user':user})                    
