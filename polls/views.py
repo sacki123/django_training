@@ -68,6 +68,6 @@ class Viewlist(generic.ListView):
     model = question
     template_name = "polls/index.html"
     context_object_name = "latest_question_list"
-    def getlist(self):
+    def get_queryset(self):
         return question.objects.all()
 
