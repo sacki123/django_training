@@ -1,0 +1,149 @@
+version: '2'
+
+services:
+  web-reverse-proxy:
+    container_name: web-reverse-proxy
+    build: ./web-reverse-proxy/
+    volumes:
+      - ./web-django/src/www:/opt/services/djangoapp/src/www
+    depends_on:
+    - web-django
+    networks:
+    - zen_test_network
+    ports:
+    - 80:80
+    - 443:443
+  web-django:
+    container_name: web-django
+    build: ./web-django/
+    volumes:
+      - ./web-django/src_zen_selenium_test/:/opt/services/djangoapp/src_zen_selenium_test/
+      - ./web-django/src/:/opt/services/djangoapp/src/
+    environment:
+      # APP debug mode setting
+      GUNICORN_CMD_ARGS: "--timeout=1000000"
+      DJANGO_DEBUG: 1
+    depends_on:
+    - db-mariadb
+    - db-redis
+    - storage-mariadb-batch
+    networks:
+    - zen_test_network
+    ports:
+    - 3000:3000
+    - 3001:3001
+  web-adminer:
+    container_name: web-adminer
+    build: ./web-adminer/
+    restart: always
+    networks:
+      - zen_test_network
+    ports:
+      - 8002:8080
+  db-mariadb:
+    container_name: db-mariadb
+    build: ./db-mariadb
+    volumes:
+      - ./db-mariadb/:/opt/services/db-mariadb/
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: zen
+      MYSQL_USER: zen
+      MYSQL_PASSWORD: zen
+    networks:
+      - zen_test_network
+    ports:
+      - 32767:3306  
+  db-redis:
+    container_name: db-redis
+    build: ./db-redis/
+    command: redis-server --appendonly yes
+    networks:
+      - zen_test_network
+    ports:
+      - "6379:6379"
+  storage-mariadb-batch:
+    container_name: storage-mariadb-batch
+    build: ./storage-mariadb-batch
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: zen_report
+      MYSQL_USER: zen
+      MYSQL_PASSWORD: zen 
+    networks:
+      - zen_test_network
+    ports:
+      - 32766:3306   
+  storage-zenko:
+    container_name: storage-zenko
+    build: ./storage-zenko/
+    restart: always
+    networks:
+      - zen_test_network
+    ports:
+      - 8001:8000
+    environment:
+      REMOTE_MANAGEMENT_DISABLE: 1
+  batch-python-luigi:
+    container_name: batch-python-luigi
+    build: ./batch-python-luigi/
+    volumes:
+      - ./batch-python-luigi/src/:/opt/services/report/src/
+    networks:
+      - zen_test_network
+    ports:
+    - 8003:80
+  util-samba-ad:
+    container_name: util-samba-ad
+    build: ./util-samba-ad
+    privileged: true
+    environment:
+      DOCKER_DEBUG: 1
+      DNS_FORWARD: 8.8.8.8
+      DNS_DOMAIN: sambaad.local
+      AD_PASSWORD: PASS0rd123
+      AD_REALM: sambaad.local
+      AD_DOMAIN: SAMBAAD
+    networks:
+      - zen_test_network
+    ports:
+      - 389:389
+  test-mailhog:
+    container_name: test-mailhog
+    image: mailhog/mailhog
+    networks:
+      - zen_test_network
+    ports:
+      - 8025:8025
+      - 1025:1025
+  test-selenium-hub:
+    container_name: test-selenium-hub
+    build: ./test-selenium_hub
+    environment:
+      - GRID_MAX_SESSION=10
+      - GRID_BROWSER_TIMEOUT=100000
+      - GRID_TIMEOUT=90000
+      - GRID_NEW_SESSION_WAIT_TIMEOUT=300000
+    networks:
+      - zen_test_network
+    ports:
+      - 4444:4444
+  test-selenium-node-chrome:
+    container_name: test-selenium-node-chrome
+    build: ./test-selenium_node_chrome
+    environment:
+      - HUB_PORT_4444_TCP_ADDR=test-selenium-hub
+      - HUB_PORT_4444_TCP_PORT=4444
+      - NODE_MAX_SESSION=10
+      - NODE_MAX_INSTANCES=10
+    networks:
+      - zen_test_network
+    ports:
+      - 5900:5900
+    depends_on:
+      - test-selenium-hub
+networks:
+  zen_test_network:
+    driver: bridge
