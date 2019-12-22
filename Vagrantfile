@@ -18,6 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 443, host: 443
   config.vm.network :forwarded_port, guest: 3000, host: 3000
   config.vm.network :forwarded_port, guest: 3001, host: 3001
+  config.vm.network :forwarded_port, guest: 3002, host: 3002
   # util-samba-ad
   config.vm.network :forwarded_port, guest: 389, host: 389
   # storage-zenko
@@ -32,7 +33,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 4444, host: 4444
   # mariadb
   config.vm.network :forwarded_port, guest: 32767, host: 32767
-  # storage-mariadb-batch
+  # store batch mariadb
   config.vm.network :forwarded_port, guest: 32766, host: 32766
   # redis
   config.vm.network :forwarded_port, guest: 6379, host: 6379

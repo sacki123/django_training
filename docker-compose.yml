@@ -66,16 +66,18 @@ services:
   storage-mariadb-batch:
     container_name: storage-mariadb-batch
     build: ./storage-mariadb-batch
+    volumes:
+      - ./storage-mariadb-batch/:/opt/services/storage-mariadb-batch/
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: zen_report
       MYSQL_USER: zen
-      MYSQL_PASSWORD: zen 
+      MYSQL_PASSWORD: zen
     networks:
       - zen_test_network
     ports:
-      - 32766:3306   
+      - 32766:3306  
   storage-zenko:
     container_name: storage-zenko
     build: ./storage-zenko/
@@ -91,10 +93,15 @@ services:
     build: ./batch-python-luigi/
     volumes:
       - ./batch-python-luigi/src/:/opt/services/report/src/
+    environment:
+      # APP debug mode setting
+      GUNICORN_CMD_ARGS: "--timeout=1000000"
+      DJANGO_DEBUG: 1  
     networks:
       - zen_test_network
     ports:
-    - 8003:80
+      - 8003:80
+      - 3002:3002
   util-samba-ad:
     container_name: util-samba-ad
     build: ./util-samba-ad
