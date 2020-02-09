@@ -23,7 +23,7 @@ INNER JOIN INSURER_001 ON INSURER_001.insurer_000_d_id = INSURER_000.did
 INNER JOIN FACILITY_010 ON FACILITY_010.facility_001_d_id = FACILITY_001.did 
            AND FACILITY_010.insurer_jurisdiction_tcd = INSURER_000.insurer_jurisdiction_tcd
            AND FACILITY_010.organization_000_d_id = ORGANIZATION_000.did'	   
-		   
+
 WHERE ORGANIZATION_000.did = %(session_company)s AND RECEIPT_100.billing_date IS NULL
       AND ((RECEIPT_100.closing_target_date >= %(closing_target_date_from)s 
 	  AND RECEIPT_100.closing_target_date <= %(closing_target_date_to)s))
