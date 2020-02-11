@@ -74,9 +74,9 @@ class insurerJsonFormater(JsonFormatHelper):
         for row in block_data:
             value_rows.append(self.get_data_row(row))
 
-            if self.is_add_aggregate_row(row):
-                aggregate = block['aggregation'].pop(0)
-                value_rows.extend(self.get_aggregate_row(aggregate, row))
+            # if self.is_add_aggregate_row(row):
+            #     aggregate = block['aggregation'].pop(0)
+            #     value_rows.extend(self.get_aggregate_row(aggregate, row))
 
         value = self.get_value(value_rows)
         data = self.construct_single_section(page, data_type, value)
@@ -140,6 +140,4 @@ class insurerJsonFormater(JsonFormatHelper):
         return padding_rows + aggregate_row
 
     def get_footer_row(self, footer):
-        return [
-            (footer['for_insurers_name'] or '').strip(),
-        ]
+        return []

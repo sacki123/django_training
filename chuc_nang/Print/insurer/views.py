@@ -9,6 +9,8 @@ import datetime
 from zm.page.abstract_page import AbstractPage
 from zm.common.file.read_files import file_tcd_to_dict
 from zm.page.insurer.logic.download_logic import DownloadLogic
+from zm.page.print.helper.print_helper import PrintHelper
+from zm.common.report.report_generator import MakeReport, PrintReport
 VIEW_FORM_ID = "search"
 VIEW_SEARCH_FORM_ID = 'search_value_dev'
 MIKAN_JSON_KEY_NAME = 'name'
@@ -24,8 +26,12 @@ MODEL_TYPE_SELECT = 'select'
 MODEL_TYPE_DATE = 'date'
 TCD_file = [('medical_0002_tcd',''), ('insurance_0001_tcd','')]
 INSURER_000 = 'INSURER_000'
-class InsurerJsonSearchView(AbstractPage):
 
+
+class InsurerJsonSearchView(AbstractPage):
+    _helper = PrintHelper()
+    _print_action = 'print'
+    _printer = PrintReport()
     def getActionEvent(self):
         """
         アクションイベント情報取得
@@ -185,9 +191,38 @@ class InsurerJsonSearchView(AbstractPage):
     def printPDF(self, json):
         request = self.getRequest()
         user_inputs = self.get_input_users(request)
+        sys_info = self._helper.get_sys_info(request.session)
         json_result = DownloadLogic().data_output(user_inputs, is_print = True)   
         final_results = DownloadLogic().generate_print_json(request, json_result)
-        
+        if final_results['relevant_infos']['action'] == 'print':
+            json = self.do_action_print(final_results, request, json, 'print', sys_info)
+        return json
+
+    def do_action_print(self, raw_json, request, json, report_action, sys_info):
+        json = self._helper.format_return_json(json)
+        json['output'] = 'pdf'
+        reponses = []
+
+        if not raw_json['relevant_infos']['query_success']:
+            json["error"]=True
+            json["message"] = "該当データがありません"
+            return json
+        try:
+            if report_action == self._print_action:
+                response = self.__make_print(raw_json['print_data'], request)
+                reponses.append(response)
+
+            json.update({'batch_responses': reponses})
+        except Exception as e:
+            json["error"]=True
+            json["message"] = str(e)
+        return json
+
+    def __make_print(self, print_data, request):
+        """ Intergrate with report create function and send request to batchserver """
+        response = self._printer.execute(print_data, request)
+        return response
+
     def get_input_users(self, request):
         form_data = request.POST
         user_inputs = {
