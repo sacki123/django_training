@@ -11,6 +11,7 @@ from zm.common.file.read_files import file_tcd_to_dict
 from zm.page.insurer.logic.download_logic import DownloadLogic
 from zm.page.print.helper.print_helper import PrintHelper
 from zm.common.report.report_generator import MakeReport, PrintReport
+from .service.print_services import PrintServices
 VIEW_FORM_ID = "search"
 VIEW_SEARCH_FORM_ID = 'search_value_dev'
 MIKAN_JSON_KEY_NAME = 'name'
@@ -31,7 +32,11 @@ INSURER_000 = 'INSURER_000'
 class InsurerJsonSearchView(AbstractPage):
     _helper = PrintHelper()
     _print_action = 'print'
+    _make_action = 'make'
+    _services = PrintServices()
     _printer = PrintReport()
+    _downloader = MakeReport()
+    
     def getActionEvent(self):
         """
         アクションイベント情報取得
@@ -44,7 +49,7 @@ class InsurerJsonSearchView(AbstractPage):
         action = {}
         action['form'] = 'setSelectFormItem'
         action['print'] = 'printPDF'
-        action['search_form'] = 'searchformEvent'
+        action['check_report'] = 'check_report'
         action['csv_export'] = 'exportCSV'
 
         return action
@@ -198,6 +203,18 @@ class InsurerJsonSearchView(AbstractPage):
             json = self.do_action_print(final_results, request, json, 'print', sys_info)
         return json
 
+    def check_report(self, json):
+        """ Check value of storage_file_path column in Report table"""
+        request = self.getRequest()
+        data = request.POST
+        report_id = data.get('report_id')
+        report = self._services.get_status_report(report_id)
+        if report['storage_file_path']:
+            report["file_s3"] = report['storage_file_path']
+            report["error_message"] = report['error_message']
+        json['data'] = report
+        return json
+
     def do_action_print(self, raw_json, request, json, report_action, sys_info):
         json = self._helper.format_return_json(json)
         json['output'] = 'pdf'
@@ -208,7 +225,22 @@ class InsurerJsonSearchView(AbstractPage):
             json["message"] = "該当データがありません"
             return json
         try:
-            if report_action == self._print_action:
+            if report_action == self._make_action:
+                if isinstance(raw_json['print_data'], list):
+                    for print_data in raw_json['print_data']:
+                        # In case of print many pdfs, raw_json['print_data'] is a list
+                        # and request is sent to Batch server many times, each returns a response
+                        # If the last response returns, it means the batch server have received all
+                        # request and is working
+                        print_data.update(sys_info)
+                        response = self.__make_report(print_data, request)
+                        reponses.append(response)
+                else:
+                    raw_json['print_data'].update(sys_info)
+                    response = self.__make_report(
+                        raw_json['print_data'], request)
+                    reponses.append(response)        
+            elif report_action == self._print_action:
                 response = self.__make_print(raw_json['print_data'], request)
                 reponses.append(response)
 
@@ -217,6 +249,11 @@ class InsurerJsonSearchView(AbstractPage):
             json["error"]=True
             json["message"] = str(e)
         return json
+
+    def __make_report(self, print_data, request):
+        """ Intergrate with report create function and send request to batchserver """
+        response = self._downloader.execute(print_data, request)
+        return response
 
     def __make_print(self, print_data, request):
         """ Intergrate with report create function and send request to batchserver """

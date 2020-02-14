@@ -16,7 +16,7 @@ INSURER_000 = 'INSURER_000'
 
 class DownloadLogic:
     output_file_name = 'INSURER_保険者マスタ台帳'
-    report_number = 'insurer_000_test'
+    report_number = 'ZU-P02-PB100'
     max_rows_in_one_page = 12
     json_formatter = insurerJsonFormater
     def __init__(self, *args, **kwargs):    
@@ -58,7 +58,7 @@ class DownloadLogic:
         blocks_info = self.process_query_results_into_blocks(result_query)
         comment_list = [
             '--------------------------------',
-            'json- ZU-P02-PB001',
+            'json- ZU-P02-PB100',
             '--------------------------------'
         ]
         formatter = self.json_formatter(blocks_info,
@@ -121,10 +121,6 @@ class DownloadLogic:
             last_block_id = current_block_id
             is_first_loop = False      
     
-    def is_first_receipt_of_current_insurer(self, index, current_query_row, query_results):
-        if index == 0:  # First row in entire query_results
-            return True
-
     def add_info_for_last_insurer_of_page(self, block):
         block['data'][self.pdf_row_id]['is_end_of_page'] = True
         block['data'][self.pdf_row_id]['remaining_rows'] = self.remaining_pdf_rows
