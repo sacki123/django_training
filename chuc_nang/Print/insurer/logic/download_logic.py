@@ -42,7 +42,7 @@ class DownloadLogic:
             data_row = self.format_data(row)
             data_insurer.append(data_row)
         csv_data[TITLE] = data_insurer   
-        time_str = int(datetime.timestamp(datetime.now()))
+        time_str = int(datetime.timestamp(datetime.now())) 
         now_str = datetime.now().strftime('%Y%m%d')
         file_name = FILE_NAME %(now_str + '_' + str(time_str))
         csv_download_path = DownloadService().exportCSV(data_insurer, file_name)

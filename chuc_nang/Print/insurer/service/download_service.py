@@ -40,7 +40,7 @@ class DownloadService:
             header.append('作成日付')
         return header
 
-    def exportCSV(self, data_list, file_name, sheet_name=None):
+    def exportEXCEL(self, data_list, file_name, sheet_name=None):
         manage_file = FileManage()
         file_path, path_download = manage_file.file_created(file_name)
         
@@ -52,6 +52,14 @@ class DownloadService:
 
         return path_download    
 
+    def exportCSV(self, data_list, file_name, sheet_name=None):
+        manage_file = FileManage()
+        file_path, path_download = manage_file.file_created(file_name)
+        with open(file_path, 'w', encoding='utf-8') as f:
+            csv_writer = csv.writer(f, delimiter=',')
+            for value in data_list:
+                csv_writer.writerow(value)
+        return path_download        
 
     # def exportCSV(self, data_list, file_name):
     #     mimetype = getMimeType('csv')
