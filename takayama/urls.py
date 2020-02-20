@@ -37,11 +37,9 @@ from .Takayama_view import Takayama_view
 # ------------------------------------------------------------
 ## Variable Section
 # ------------------------------------------------------------
-app_name = 'Takayama'
  
 urlpatterns = [
-    url('', Takayama_view.as_view(), name='Takayama_view'),  
-    url(r'takayama/(?P<uri>.*)', Takayama_view.as_view(), name='Takayama_view'),
+    re_path(r'^(?P<uri>.*)', Takayama_view.as_view()),
 ]
 
 # ------------------------------------------------------------

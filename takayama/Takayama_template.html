@@ -1,4 +1,4 @@
-{%load static%}
+{% load static %}
 <!doctype html>
 <html lang="ja">
 
@@ -10,15 +10,20 @@
 	
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
-	
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
 	<link rel="stylesheet"
 		href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css" />
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
 	<!-- 追加CSS -->
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/custom.css">
-	<!-- <link href="css/select-multiple.css" media="screen" rel="stylesheet" type="text/css"> -->
-	
+	<!-- <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css"> -->
+	<script type="text/javacscript" src="/js/jquery.min.js" charset="utf-8">;</script>
+	<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  	<script src="//code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
 	<title>保険者番号変換情報</title>
 </head>
 
@@ -219,19 +224,19 @@
 						<div class="container">
 							<div class="card text-center text-dark w-100 mx-auto" id="">
 								<div class="card-body mx-auto mt-3">
-									<form>
+									<form id="form_modal_create" onsubmit="create_event()">
 										<div class="form-group row">
 											<label for="name" class="col-md-3 col-form-label">
 												保険種別TCD
 											</label>
 											<div class="col-md-3">
-												<input type="text" class="form-control" id="name">
+												<input class="form-control" name='insurance_category_tcd' type="text"/>
 											</div>
 											<label for="name" class="col-md-3 col-form-label">
 												保険者法別番号
 											</label>
 											<div class="col-md-3">
-												<input type="text" class="form-control" id="name">
+												<input class="form-control" name='insurer_law_number' type="text"/>
 											</div>
 										</div>
 										<div class="form-group row">											
@@ -239,13 +244,13 @@
 												保険者都道府県番号
 											</label>
 											<div class="col-md-3">
-												<input type="text" class="form-control" id="name">
+												<input class="form-control" name='insurer_pref_number' type="text"/>
 											</div>
 											<label for="name" class="col-md-3 col-form-label">
-												旧保険者番号
+												電話番号
 											</label>
 											<div class="col-md-3">
-												<input type="text" class="form-control" id="name">
+												<input class="form-control" name='phone_number' type="text"/>
 											</div>
 										</div>
 										<div class="form-group row">
@@ -253,13 +258,12 @@
 												保険者番号
 											</label>
 											<div class="col-md-3">
-												<input type="text" class="form-control" id="name">
+												<input class="form-control" name='insurer_number' type="text" />
 											</div>
 											<label for="name" class="col-md-3 col-form-label">
 												全柔協保険者番号
 											</label>
 											<div class="col-md-3">
-												<input type="text" class="form-control" id="name">
 											</div>
 										</div>
 										<div class="form-group row">
@@ -267,7 +271,7 @@
 												作成者
 											</label>
 											<div class="col-md-3">
-												<input type="text" class="form-control" id="name">
+												<input class="form-control" name='create_user' type="text"/>
 											</div>
 										</div>
 										<div class="form-group row">
@@ -277,8 +281,8 @@
 											<div class="col-md-4">
 												<div class="input-group date datetimepicker-master"
 													id="datetimepicker-search-1-1" data-target-input="nearest">
-													<input type="text" class="form-control datetimepicker-input"
-														data-target="#datetimepicker-search-1-1" />
+													<input class="form-control datetimepicker-input"
+														data-target="#datetimepicker-search-1-1" name='create_date' type="text"/>
 													<div class="input-group-prepend"
 														data-target="#datetimepicker-search-1-1"
 														data-toggle="datetimepicker">
@@ -287,28 +291,14 @@
 													</div>
 												</div>
 											</div>
-											<label class="col-xs-1" style="padding-top: 7px; text-align:center;"> ～
-											</label>
-											<div class="col-md-4">
-												<div class="input-group date datetimepicker-master"
-													id="datetimepicker-search-1-2" data-target-input="nearest">
-													<input type="text" class="form-control datetimepicker-input"
-														data-target="#datetimepicker-search-1-2" />
-													<div class="input-group-prepend"
-														data-target="#datetimepicker-search-1-2"
-														data-toggle="datetimepicker">
-														<div class="input-group-text"><i
-																class="far fa-calendar-alt"></i></div>
-													</div>
-												</div>
-											</div>
+											
 										</div>
 										<div class="form-group row">
 											<label for="name" class="col-md-3 col-form-label">
 												更新者
 											</label>
 											<div class="col-md-3">
-												<input type="text" class="form-control" id="name">
+												<input class="form-control" id="name" name='update_user' type="text" />
 											</div>
 										</div>
 										<div class="form-group row">
@@ -318,8 +308,8 @@
 											<div class="col-md-4">
 												<div class="input-group date datetimepicker-master"
 													id="datetimepicker-search-2-1" data-target-input="nearest">
-													<input type="text" class="form-control datetimepicker-input"
-														data-target="#datetimepicker-search-2-1" />
+													<input class="form-control datetimepicker-input"
+														data-target="#datetimepicker-search-2-1" name='update_date' type="text" />
 													<div class="input-group-prepend"
 														data-target="#datetimepicker-search-2-1"
 														data-toggle="datetimepicker">
@@ -328,30 +318,16 @@
 													</div>
 												</div>
 											</div>
-											<label class="col-xs-1" style="padding-top: 7px; text-align:center;"> ～
-											</label>
-											<div class="col-md-4">
-												<div class="input-group date datetimepicker-master"
-													id="datetimepicker-search-2-2" data-target-input="nearest">
-													<input type="text" class="form-control datetimepicker-input"
-														data-target="#datetimepicker-search-2-2" />
-													<div class="input-group-prepend"
-														data-target="#datetimepicker-search-2-2"
-														data-toggle="datetimepicker">
-														<div class="input-group-text"><i
-																class="far fa-calendar-alt"></i></div>
-													</div>
-												</div>
-											</div>
+								
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" onclick="create_event();"> 実行</button>
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
 										</div>
 									</form>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal">実行</button>
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
 					</div>
 				</div>
 			</div>
@@ -416,42 +392,7 @@
 			</div>
 		{% endif %}
 
-		<script type="text/javascript">
-		
-			$(function(){
-				// 「Ajax通信」ボタンをクリックしたら発動
-				$('#search').on('click',function(){
-					$.ajax({
-					url:'/takayama/' ,
-					type:'GET',
-					data:{
-						'answer':$('#answer').val()
-					}
-					})
-					// Ajax通信が成功したら発動
-					.done( (data) => {
-					$('.result').html(data);
-					})
-					// Ajax通信が失敗したら発動
-					.fail( (jqXHR, textStatus, errorThrown) => {
-					alert('Ajax通信に失敗しました。');
-					console.log("jqXHR          : " + jqXHR.status); // HTTPステータスを表示
-					console.log("textStatus     : " + textStatus);    // タイムアウト、パースエラーなどのエラー情報を表示
-					console.log("errorThrown    : " + errorThrown.message); // 例外情報を表示
-					})
-					// Ajax通信が成功・失敗のどちらでも発動
-					.always( (data) => {
-					if($('#answer').val() == '小松菜奈'){
-						console.log('あなたは正しい');
-					}else{
-						console.log('あなたは間違っている');
-					}
-					});
-				});
-				});
-
-		</script>											
-
+	
 		<!-- フッター -->
 		<footer class="py-4 my-2 bg-secondary text-light ">
 			<div class="container text-center">
@@ -464,36 +405,36 @@
 	</main>
 
 	<!-- js読み込み -->
-	<<script src="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.js"></script>
-	
+	<script src="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.js">;</script>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+		integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous">;
+		</script>
 	<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"
-		integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous">
-	</script>
-	
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+		integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous">;
 	</script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">;
 	</script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">;
 	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/ja.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js">;</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/ja.js">;</script>
 	<script type="text/javascript"
-		src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js">
+		src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js">;
 	</script>
-	<!-- <script src="js/jquery.select-multiple.js" type="text/javascript"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript"></script> 
 	<!-- <script src="js/test.js" type="text/javascript"></script> -->
 
-	<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js">;</script>
 
-	<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js">;</script>
+	<script type="text/javascript" src="js/bootstrap.bundle.min.js">;</script>
+	<script type="text/javascript" src="/js/takayama/takayama.js" charset="utf-8">;</script>
+	<!-- <script type="text/javascript" src="/js/takayama/jquery.datetimepicker.js">;</script> -->
+	<!-- <script type="text/javascript" src="/js/takayama/bootstrap-datetimepicker.min.js">;</script> -->
 
-	<!-- js -->
-	<script type="text/javascript">
+		<script type="text/javascript">
 		$(function () {
 			$('.datetimepicker-master').datetimepicker({
 				dayViewHeaderFormat: 'YYYY年 M月',
@@ -524,73 +465,73 @@
 					showClose: true
 				}
 			});
-
-			const tags1 = [{id: 0, text: 'タグ1'},{id: 1, text: 'タグ2'},{id: 2, text: 'タグ3'},{id: 3, text: 'タグ4'}];
-			const tags2 = [{id: 0, text: 'A'},{id: 1, text: 'B'},{id: 2, text: 'C'},{id: 3, text: 'D'}];
-			const tags3 = [{id: 0, text: '1'},{id: 1, text: '2'},{id: 2, text: '3'},{id: 3, text: '4'}];
-			const filetypes = [{id: 0, text: 'Excel'},{id: 1, text: 'JSON'}];
-			// const cols = [{id: 0, text: '保険種別TCD'},{id: 1, text: '保険者法別番号'},{id: 2, text: '保険者都道府県番号'},
-			// 			  {id: 3, text: '旧保険者番号'},{id: 4, text: '保険者番号'},{id: 5, text: '全柔協保険者番号'},
-			// 			  {id: 6, text: 'メモ'},{id: 7, text: '表示名'},{id: 8, text: '削除フラグ'},
-            //               {id: 9, text: '作成者'},{id: 10, text: '作成日'},{id: 11, text: '更新者'},{id: 12, text: '更新日'}];
+		
+			// const tags1 = [{id: 0, text: 'タグ1'},{id: 1, text: 'タグ2'},{id: 2, text: 'タグ3'},{id: 3, text: 'タグ4'}];
+			// const tags2 = [{id: 0, text: 'A'},{id: 1, text: 'B'},{id: 2, text: 'C'},{id: 3, text: 'D'}];
+			// const tags3 = [{id: 0, text: '1'},{id: 1, text: '2'},{id: 2, text: '3'},{id: 3, text: '4'}];
+			// const filetypes = [{id: 0, text: 'Excel'},{id: 1, text: 'JSON'}];
+			// // const cols = [{id: 0, text: '保険種別TCD'},{id: 1, text: '保険者法別番号'},{id: 2, text: '保険者都道府県番号'},
+			// // 			  {id: 3, text: '旧保険者番号'},{id: 4, text: '保険者番号'},{id: 5, text: '全柔協保険者番号'},
+			// // 			  {id: 6, text: 'メモ'},{id: 7, text: '表示名'},{id: 8, text: '削除フラグ'},
+            // //               {id: 9, text: '作成者'},{id: 10, text: '作成日'},{id: 11, text: '更新者'},{id: 12, text: '更新日'}];
 			
 
-			$('#one .select2').select2({
-			placeholder: '選択してください。',
-			multiple: "multiple",
-			data:tags1,
-			});
-
-			$('#two .select2').select2({
-			placeholder: '選択してください。',
-			multiple: "multiple",
-			data:tags2,
-			});
-
-			$('#three .select2').select2({
-			placeholder: '選択してください。',
-			multiple: "multiple",
-			data:tags3,
-			});
-
-			$('#filetype .select2').select2({
+			// $('#one .select2').select2({
 			// placeholder: '選択してください。',
-			minimumResultsForSearch: Infinity,
-			data:filetypes,
-			});
+			// multiple: "multiple",
+			// data:tags1,
+			// });
 
-			$('#colselect .select2').select2({
-			placeholder: '選択してください。',
-			multiple: "multiple",
-			// data:cols,
-			});
+			// $('#two .select2').select2({
+			// placeholder: '選択してください。',
+			// multiple: "multiple",
+			// data:tags2,
+			// });
 
-			$('#myTable').DataTable({
-					language: {
-					"decimal": ".",
-					"thousands": ",",
-					"sProcessing": "処理中...",
-					"sLengthMenu": "_MENU_ 件表示",
-					"sZeroRecords": "データはありません。",
-					"sInfo": " _TOTAL_ 件中 _START_ から _END_ まで表示",
-					"sInfoEmpty": " 0 件中 0 から 0 まで表示",
-					"sInfoFiltered": "（全 _MAX_ 件より抽出）",
-					"sInfoPostFix": "",
-					"sSearch": "検索:",
-					"sUrl": "",
-					"oPaginate": {
-						"sFirst": "先頭",
-						"sPrevious": "前",
-						"sNext": "次",
-						"sLast": "最終"
-					}
-				},
-			});
+			// $('#three .select2').select2({
+			// placeholder: '選択してください。',
+			// multiple: "multiple",
+			// data:tags3,
+			// });
 
-			$("#myTable").DataTable();
+			// $('#filetype .select2').select2({
+			// // placeholder: '選択してください。',
+			// minimumResultsForSearch: Infinity,
+			// data:filetypes,
+			// });
+
+			// $('#colselect .select2').select2({
+			// placeholder: '選択してください。',
+			// multiple: "multiple",
+			// // data:cols,
+			// });
+
+			// $('#myTable').DataTable({
+			// 		language: {
+			// 		"decimal": ".",
+			// 		"thousands": ",",
+			// 		"sProcessing": "処理中...",
+			// 		"sLengthMenu": "_MENU_ 件表示",
+			// 		"sZeroRecords": "データはありません。",
+			// 		"sInfo": " _TOTAL_ 件中 _START_ から _END_ まで表示",
+			// 		"sInfoEmpty": " 0 件中 0 から 0 まで表示",
+			// 		"sInfoFiltered": "（全 _MAX_ 件より抽出）",
+			// 		"sInfoPostFix": "",
+			// 		"sSearch": "検索:",
+			// 		"sUrl": "",
+			// 		"oPaginate": {
+			// 			"sFirst": "先頭",
+			// 			"sPrevious": "前",
+			// 			"sNext": "次",
+			// 			"sLast": "最終"
+			// 		}
+			// 	},
+			// });
+
+			// $("#myTable").DataTable();
 		});
 
-	</script>
+	</script> 
 
 </body>
 
