@@ -18,12 +18,14 @@ import uuid
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views import View
+from django.db import transaction
 from .Takayama_form import Takayama_form
 from zm.models.TAKAYAMA_MODEL import TAKAYAMA_MODEL
 from zm.models.INSURER_TEST import INSURER_TEST
 from django.db import connection
+from zm.common.model import getClass
 
-
+INSURER = 'INSURER_TEST'
 class Takayama_view(View):
 
 
@@ -58,14 +60,16 @@ class Takayama_view(View):
     def post(self, request, *args, **kwargs):
         self.get_request = request
         json = self.json_response()
+        json = self.do_post_event(request, json)
+        return JsonResponse(json)
+    @transaction.atomic
+    def do_post_event(self, request, json):
         action = self.get_action()
         list_action = self.get_list_action()
         if action in list_action:
-            json = self.do_post_event(action, list_action, json)
-        return JsonResponse(json)
-
-    def do_post_event(self, action, list_action, json):
-        return getattr(self,list_action[action])(json)
+            return getattr(self,list_action[action])(json)
+        json['status'] = 202
+        return json
 
     def json_response(self):
         json = {
@@ -84,9 +88,11 @@ class Takayama_view(View):
 
     def get_list_action(self):
         list_action = {
-            'create': 'create_event',
+            'create': 'create_event',   
             'edit': 'edit_event',
-            'delete': 'delete_event'
+            'delete': 'delete_event',
+            'header': 'get_header_table',
+            'create_table': 'create_table'
         }
         return list_action
 
@@ -110,6 +116,7 @@ class Takayama_view(View):
             value = value.replace('日','')
             inputs[key] = value
         return inputs   
+        
     def create_uuid(self):
         update_param = {
         'rid': uuid.uuid4(),
@@ -122,7 +129,26 @@ class Takayama_view(View):
         inputs = self.validate_inputs(inputs)
         inputs.update(self.create_uuid())
         json['message'] = 'Success'
-        record = INSURER_TEST(**inputs)
-        record.save()
+        try:
+            record = INSURER_TEST(**inputs)
+            record.save()
+        except Exception as e:
+            json['error'] = e
+            json['status'] = 202
         return json
-        
+
+    def get_header_table(self, json):
+        obj = getClass(INSURER)
+        fields = obj._meta.fields
+        verbose_names = []
+        for key in fields:
+            if key.verbose_name == 'RID' or key.verbose_name == 'DID':
+                continue
+            verbose_names.append({'title': key.verbose_name})
+        json['header'] = verbose_names   
+        return json
+
+    def create_table(self, json):
+        inputs = self.get_inputs()
+        inputs = self.validate_inputs(inputs)
+

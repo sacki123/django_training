@@ -58,116 +58,106 @@
 				<div class="card text-center text-dark w-100 mx-auto" id="search-form">
 						<div id="main-card">
 							<div class="card-body">
-								<form>
+								<form id='form_main'>
 									<div class="form-group row">
 										<label for="name" class="col-md-3 col-form-label">
-											保険種別TCD <span class="badge badge-warning">必須</span>
+											保険種別TCD
 										</label>
 										<div class="col-md-3">
-											<input type="text" class="form-control" id="name" required>
+											<input class="form-control" name='insurance_category_tcd' type="text"/>
 										</div>
 										<label for="name" class="col-md-3 col-form-label">
-											保険者法別番号 <span class="badge badge-warning">必須</span>
+											保険者法別番号
 										</label>
 										<div class="col-md-3">
-											<input type="text" class="form-control" id="name" required>
+											<input class="form-control" name='insurer_law_number' type="text"/>
+										</div>
+									</div>
+									<div class="form-group row">											
+										<label for="name" class="col-md-3 col-form-label">
+											保険者都道府県番号
+										</label>
+										<div class="col-md-3">
+											<input class="form-control" name='insurer_pref_number' type="text"/>
+										</div>
+										<label for="name" class="col-md-3 col-form-label">
+											電話番号
+										</label>
+										<div class="col-md-3">
+											<input class="form-control" name='phone_number' type="text"/>
 										</div>
 									</div>
 									<div class="form-group row">
 										<label for="name" class="col-md-3 col-form-label">
-											保険者都道府県番号 <span class="badge badge-warning">必須</span>
+											保険者番号
 										</label>
 										<div class="col-md-3">
-											<input type="text" class="form-control" id="name" required>
+											<input class="form-control" name='insurer_number' type="text" />
 										</div>
 										<label for="name" class="col-md-3 col-form-label">
-											旧保険者番号 <span class="badge badge-warning">必須</span>
+											全柔協保険者番号
 										</label>
 										<div class="col-md-3">
-											<input type="text" class="form-control" id="name" required>
-										</div>
-									</div>
-									<div class="form-group row">
-										<label for="name" class="col-md-3 col-form-label">
-											保険者番号 <span class="badge badge-warning">必須</span>
-										</label>
-										<div class="col-md-3">
-											<input type="text" class="form-control" id="name" required>
-										</div>
-										<label for="name" class="col-md-3 col-form-label">
-											全柔協保険者番号 <span class="badge badge-warning">必須</span>
-										</label>
-										<div class="col-md-3">
-											<input type="text" class="form-control" id="name" required>
 										</div>
 									</div>
 									<div class="form-group row">
 										<label for="name" class="col-md-3 col-form-label">
-											表示名
+											作成者
 										</label>
 										<div class="col-md-3">
-											<input type="text" class="form-control" id="name">
-										</div>
-										<label for="name" class="col-md-3 col-form-label">
-											メモ
-										</label>
-										<div class="col-md-3">
-											<input type="text" class="form-control" id="name">
+											<input class="form-control" name='create_user' type="text"/>
 										</div>
 									</div>
 									<div class="form-group row">
 										<label for="name" class="col-md-3 col-form-label">
-											作成者 <span class="badge badge-warning">必須</span>
+											作成日
 										</label>
-										<div class="col-md-3">
-											<input type="text" class="form-control" id="name" required>
-										</div>
-										<label for="name" class="col-md-3 col-form-label">
-											削除フラグ
-										</label>
-										<div class="col-md-3 text-left">
-											<div class="btn-group btn-group-toggle" data-toggle="buttons">
-												<label class="btn btn-secondary active">
-													<input type="radio" name="options" id="option-no"> いいえ
-												</label>
-												<label class="btn btn-secondary">
-													<input type="radio" name="options" id="option-yes"> はい
-												</label>
-											</div>
-										</div>
-									</div>
-									<div class="form-group row">
-										<label for="name" class="col-md-3 col-form-label">
-											作成日 <span class="badge badge-warning">必須</span>
-										</label>
-										<div class="col-md-3">
+										<div class="col-md-4">
 											<div class="input-group date datetimepicker-master"
-												id="datetimepicker-create-1-1" data-target-input="nearest">
-												<input type="text" class="form-control datetimepicker-input"
-													data-target="#datetimepicker-create-1-1" />
-												<div class="input-group-prepend" data-target="#datetimepicker-create-1-1"
+												id="datetimepicker-search-1-1" data-target-input="nearest">
+												<input class="form-control datetimepicker-input"
+													data-target="#datetimepicker-search-1-1" name='create_date' type="text"/>
+												<div class="input-group-prepend"
+													data-target="#datetimepicker-search-1-1"
 													data-toggle="datetimepicker">
-													<div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+													<div class="input-group-text"><i
+															class="far fa-calendar-alt"></i></div>
 												</div>
 											</div>
 										</div>
-										<label class="col-xs-1" style="padding-top: 7px; text-align:center;"> ～ </label>
+										
+									</div>
+									<div class="form-group row">
+										<label for="name" class="col-md-3 col-form-label">
+											更新者
+										</label>
 										<div class="col-md-3">
+											<input class="form-control" id="name" name='update_user' type="text" />
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="name" class="col-md-3 col-form-label">
+											更新日
+										</label>
+										<div class="col-md-4">
 											<div class="input-group date datetimepicker-master"
-												id="datetimepicker-create-1-2" data-target-input="nearest">
-												<input type="text" class="form-control datetimepicker-input"
-													data-target="#datetimepicker-create-1-2" />
-												<div class="input-group-prepend" data-target="#datetimepicker-create-1-2"
+												id="datetimepicker-search-2-1" data-target-input="nearest">
+												<input class="form-control datetimepicker-input"
+													data-target="#datetimepicker-search-2-1" name='update_date' type="text" />
+												<div class="input-group-prepend"
+													data-target="#datetimepicker-search-2-1"
 													data-toggle="datetimepicker">
-													<div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+													<div class="input-group-text"><i
+															class="far fa-calendar-alt"></i></div>
 												</div>
 											</div>
 										</div>
+									</div>
 									</div>
 									<div class="form-group row ">
 										<div class="col-md-4 mx-auto">
 											<!-- <button type="submit" class="btn btn-primary btn-block">新規作成</button> -->
-											<button id="search" type="button" class="btn btn-primary btn-block" style="font-size: 16px;">検索</button>
+											<button id="search" type="button" class="btn btn-primary btn-block" onclick="search_event()" style="font-size: 16px;">検索</button>
 										</div>
 									</div>
 								</form>
@@ -332,8 +322,12 @@
 				</div>
 			</div>
 		</div>
-
-		{% if search %}
+		<div class="container">
+		<div class="panel-body">
+			<table class="table table-bordered table-hover compact display" id="search_list" style="width: 100;"></table>
+		</div>
+		</div>
+		<!-- {% if search %}
 			<div class="container">
 				<div class="card text-center text-dark w-100 mx-auto" id="search-form">
 					<div id="main-card">
@@ -390,7 +384,7 @@
 					</div>
 				</div>
 			</div>
-		{% endif %}
+		{% endif %} -->
 
 	
 		<!-- フッター -->

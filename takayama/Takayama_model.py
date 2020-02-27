@@ -42,15 +42,15 @@ from zm import zm_model
 # ------------------------------------------------------------
 ## Class Section
 # ------------------------------------------------------------
-class Takayama_model(models.Model):
+class TAKAYAMA_MODEL(zm_model.ZMModel):
 	class Meta:
 		app_label    = model.APP_LABEL
-		db_table     = 'Takayama_model'
-		verbose_name = '保険者'
+		db_table     = 'TAKAYAMA_MODEL'
+		verbose_name = '保険者1'
 		ordering = ['create_date']
 
 	is_revision = True
-	#name_format = '{{insurer_name}} | {{insurer_law_number}} {{insurer_pref_number}} {{insurer_number}}'
+	name_format = '{{insurer_name}} | {{insurer_law_number}} {{insurer_pref_number}} {{insurer_number}}'
 
 	rid = mikan_model.MikanModel.CreateFiled('MikanUUIDField','rid','RID',primary_key=True,default=uuid.uuid4,editable=False,type_name='hidden',required=False)
 	did = mikan_model.MikanModel.CreateFiled('MikanUUIDField','did','DID',null=True,type_name='hidden',range=None,required=False)
