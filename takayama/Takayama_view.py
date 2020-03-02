@@ -15,6 +15,8 @@ __date__     = '2018/06/01'
 
 import json
 import uuid
+import urllib
+from datetime import datetime, date
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views import View
@@ -62,6 +64,7 @@ class Takayama_view(View):
         json = self.json_response()
         json = self.do_post_event(request, json)
         return JsonResponse(json)
+
     @transaction.atomic
     def do_post_event(self, request, json):
         action = self.get_action()
@@ -148,7 +151,20 @@ class Takayama_view(View):
         json['header'] = verbose_names   
         return json
 
+    def get_datatable(self, inputs):
+        filter_inputs = {}
+        data_input = []
+        if 'data_table' in inputs and inputs['data_table']:
+            data_table = inputs.get('data_table','')
+            data_table = data_table.split('&')
+            for value in data_table:
+                data_input.clear()
+                data_input = value.split('=')
+                filter_inputs.update({data_input[0]:data_input[1]})
+        return filter_inputs        
+
     def create_table(self, json):
         inputs = self.get_inputs()
-        inputs = self.validate_inputs(inputs)
+        data_table = self.get_datatable(inputs)
+        inputs = self.validate_inputs(data_table)
 

@@ -26,7 +26,7 @@ function search_event(){
     }).done(function(results){    
         create_datatable(results);
     }).fail(function(results){
-        com.msg.popup.danger("Error");
+        alert(results['message']);
     });
         
 function create_datatable(results){
@@ -34,7 +34,7 @@ function create_datatable(results){
     var data_table_option = {
         "processing": true,
         "serverSide": true,
-        "colums": results['header'],
+        "columns": results['header'],
         "paging": true,
         "pageLength": 1,
         "searching": true,
@@ -47,12 +47,14 @@ function create_datatable(results){
         "ajax": {
             "url": "create_table",
             "type": "post",
-            "data": data
+            "data": {
+                'data_table': data
         },
         "select": {
             "style": "single"
         }
+        },
     };
-    $('#' + 'search_list').DataTable(data_table_option);
+    $('#search_list').DataTable(data_table_option);
 }
 }
