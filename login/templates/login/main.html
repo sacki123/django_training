@@ -1,0 +1,5 @@
+Hello, <strong>{{user}}</strong>
+<form action="{% url 'login:logout' %}" method="POST">
+{% csrf_token %}
+<input type="submit" value="logout"/>
+</form>
