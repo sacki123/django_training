@@ -17,15 +17,16 @@ import json
 import uuid
 import urllib
 from datetime import datetime, date
+from zm.common.model import getClass
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.db import transaction
 from .Takayama_form import Takayama_form
+from .logic import SqlLogic
 from zm.models.TAKAYAMA_MODEL import TAKAYAMA_MODEL
 from zm.models.INSURER_TEST import INSURER_TEST
-from django.db import connection
-from zm.common.model import getClass
+
 
 INSURER = 'INSURER_TEST'
 class Takayama_view(View):
@@ -99,12 +100,6 @@ class Takayama_view(View):
         }
         return list_action
 
-    def run_sql(self, sql, sqlparam):
-        with connection.cursor() as con:
-            con.excecute(sql, sqlparam)
-            results = con.fetchall()
-            return results
-    
     def get_inputs(self):
         request = self.get_request
         inputs = {}
@@ -121,11 +116,11 @@ class Takayama_view(View):
         return inputs   
         
     def create_uuid(self):
-        update_param = {
+        update_params = {
         'rid': uuid.uuid4(),
         'did': uuid.uuid4()
         }
-        return update_param
+        return update_params
 
     def create_event(self, json):
         inputs = self.get_inputs()
@@ -158,13 +153,28 @@ class Takayama_view(View):
             data_table = inputs.get('data_table','')
             data_table = data_table.split('&')
             for value in data_table:
+                if value == "":
+                    continue
                 data_input.clear()
                 data_input = value.split('=')
+                data_input[1] = urllib.parse.unquote(data_input[1])
                 filter_inputs.update({data_input[0]:data_input[1]})
         return filter_inputs        
+    def json_datatable(self, json, data):
+        json.clear()
+        json['draw'] = 1
+        json['recordsTotal'] = len(data)
+        json['recordsFiltered'] = len(data)
+        json['data'] = [data]
+        return json
 
     def create_table(self, json):
-        inputs = self.get_inputs()
-        data_table = self.get_datatable(inputs)
-        inputs = self.validate_inputs(data_table)
+        params = self.get_inputs()
+        filter_params = self.get_datatable(params)
+        inputs = self.validate_inputs(filter_params)
+        results = SqlLogic().get_data_query(inputs)
+        json = self.json_datatable(json, results)
+        return json
+
+        
 
