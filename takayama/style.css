@@ -1,0 +1,9 @@
+.dataTables_wrapper table th {
+    background-color: cornflowerblue;
+    white-space: nowrap;
+    color: cornsilk;
+}
+
+.dataTables_wrapper table td {
+    white-space: nowrap;
+}

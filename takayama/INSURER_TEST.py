@@ -25,6 +25,6 @@ class INSURER_TEST(models.Model):
     display_name = models.TextField(verbose_name='表示名')
     delete_flag = models.IntegerField(verbose_name='削除フラグ', default=0)
     create_user = models.TextField(verbose_name='作成者', max_length=100)
-    create_date = models.DateField(verbose_name='作成日',auto_now_add=True)
+    create_date = models.DateField(verbose_name='作成日')
     update_user = models.TextField(verbose_name='更新者',max_length=100)
-    update_date = models.DateField(verbose_name='更新日', auto_now=True)
+    update_date = models.DateField(verbose_name='更新日')

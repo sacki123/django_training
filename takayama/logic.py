@@ -8,7 +8,8 @@ class SqlLogic:
     def sql_execute(self, sql, sql_param):
         with connection.cursor() as con:
             con.execute(sql, sql_param)
-            row = self.dictfetchall(con)
+            # row = self.dictfetchall(con)
+            row = con.fetchall()
         return row
 
     @staticmethod     
@@ -35,7 +36,7 @@ class SqlLogic:
             SELECT *
         """
         # keys = list(inputs.keys())
-        # for i in range(len(keys)-2):
+        # for i in range(len(keys)-1):
         #     sql += keys[i] + ","
         # sql += keys[-1]
         return sql
@@ -56,7 +57,7 @@ class SqlLogic:
             str_where = f"""
                 WHERE 
             """ 
-            for i in range(len(key)-2):
+            for i in range(len(key)-1):
                 if inputs[key[i]] == "":
                     continue
                 str_sql += key[i]+ "= %(" + key[i] +")s AND "

@@ -159,21 +159,35 @@ class Takayama_view(View):
                 data_input = value.split('=')
                 data_input[1] = urllib.parse.unquote(data_input[1])
                 filter_inputs.update({data_input[0]:data_input[1]})
-        return filter_inputs        
-    def json_datatable(self, json, data):
+        return filter_inputs       
+
+    def json_datatable(self, json, data, riddata):
         json.clear()
         json['draw'] = 1
         json['recordsTotal'] = len(data)
         json['recordsFiltered'] = len(data)
-        json['data'] = [data]
+        json['data'] = data
+        json['riddata'] = riddata
         return json
+
+    def format_data_table(self, results):
+        data = []
+        riddata = []
+        for i in results:
+            riddata.append(i[0])
+            row = []
+            for j in range(2, len(i)):
+                row.append(i[j])    
+            data.append(row)
+        return data, riddata
 
     def create_table(self, json):
         params = self.get_inputs()
         filter_params = self.get_datatable(params)
         inputs = self.validate_inputs(filter_params)
         results = SqlLogic().get_data_query(inputs)
-        json = self.json_datatable(json, results)
+        data, riddata = self.format_data_table(results)
+        json = self.json_datatable(json, data, riddata)
         return json
 
         
