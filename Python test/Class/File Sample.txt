@@ -1,0 +1,6 @@
+AB0001 Cake 2.25
+BC0002 Candy 1.12
+AF0003 Cream 4.65
+AB0008 máy tính 7
+AB0009 máy tính xách tay 8
+KK0009 máy tính xách tay 3

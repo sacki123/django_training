@@ -1,0 +1,2 @@
+MARIA_ENGINE = "MariaDB"
+UTF8MB4_CHARSET = "utf8mb4"

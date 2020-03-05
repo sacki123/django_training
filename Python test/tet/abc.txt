@@ -1,0 +1,3 @@
+Beginning programmers make mistakes writing programs 
+because of inexperience in programming in gen-eral or because of
+ unfamiliarity with a programming language. Seasoned programmers 
