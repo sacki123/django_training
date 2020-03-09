@@ -1,22 +1,31 @@
 from faker import Faker, Factory
 import jaconv
+from datetime import datetime, date
 from pykakasi import kakasi, wakati
 from gimei import Gimei
 fake = Faker('ja_JP')
+
+# date = fake.date_between_dates(date_start="1920/1/1", date_end="2019,1,1")
+
+# date = fake.date_of_birth(tzinfo=None, minimum_age=20, maximum_age=95)
+# if date >= datetime(1926,12,26) and date <= datetime(1989,1,8):      
+#     print("OK")
+
 g = Gimei()
-kanji_first = g.name.first.kanji
-kanji_last = g.name.last.kanji
+t=g.name
+kanji = t.kanji
+kana = t.katakana
+print(kanji)
+print(kana)
 
-print(kanji_first)
-print(kanji_last)
 
-ka = kakasi()
-ka.setMode('J', 'K')
-cov = ka.getConverter()
-k = cov.do(kanji_first)
-k1 = cov.do(kanji_last)
-print(k)
-print(k1)
+# ka = kakasi()
+# ka.setMode('J', 'K')
+# cov = ka.getConverter()
+# k = cov.do(kanji_first)
+# k1 = cov.do(kanji_last)
+# print(k)
+# print(k1)
 # print("Chuyen sang hiragana")
 # ka.setMode('K', 'H')
 # cov = ka.getConverter()
