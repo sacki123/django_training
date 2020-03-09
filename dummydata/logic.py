@@ -2,7 +2,7 @@ import os
 import json
 import random
 import jaconv
-from datetime import datetime
+import datetime
 from collections import OrderedDict
 from gimei import Gimei
 from pykakasi import kakasi
@@ -40,7 +40,8 @@ def dummy_data(_line, _type, from_length, to_length, value, kanji=None, kana=Non
     temp = ""
     if _type == 9:
         if value == 'date':
-            temp = create_birth_day()
+            date_of_birth = fake.date_of_birth(tzinfo=None, minimum_age=20, maximum_age=95)
+            temp = create_birth_day(date_of_birth)
         elif value == 'num':    
             for ch in _line[from_length:to_length]:
                 if ch == " ":
@@ -57,7 +58,7 @@ def dummy_data(_line, _type, from_length, to_length, value, kanji=None, kana=Non
         elif value == 'kana':
             temp = kana  
         elif value == 'zipcode':
-            temp = jaconv.z2h(create_zipcode(to_length - from_length), digit=True, ascii=True)  
+            temp = create_zipcode(_line, from_length, to_length) 
     elif _type == "N":
         if value == "kanji":
             temp = kanji
@@ -94,39 +95,37 @@ def create_address(address, value ):
         ad = ad + (loop * "\u3000") 
     elif len(ad) > value:
         ad = ad[0:value]        
-    return ad
+    return jaconv.h2z(ad, digit=True, ascii=True)
 
-def create_zipcode(value):
-    zc = fake.zipcode()
-    zc = zc[0:value]
+def create_zipcode(_line, from_length, to_length):
+    if _line[from_length:to_length].count(" ") > 1:
+        zc = " " * (to_length -from_length)
+    else:
+        zc = fake.zipcode()
+        zc = zc[0:to_length-from_length]
     return zc
 
-def create_birth_day():
-    date = fake.date_of_birth(tzinfo=None, minimum_age=20, maximum_age=95)
-    if date >= datetime(1926,12,26) and date < datetime(1989,1,8):
-        gengo = "3"
-        year = str(date.year - 1926 + 1)
-        if date.month < 10:
-            month = "0" + str(date.month)
-        else:
-            month = str(date.month)
-        if date.day < 10:
-            day = "0" + str(date.day)
-        else:
-            day = str(date.day)
-    elif date >= datetime(1989,1,8) and date < datetime(2019,5,1):
-        gengo = "4"
-        year = str(date.year - 1989 + 1)
-        if date.month < 10:
-            month = "0" + str(date.month)
-        else:
-            month = str(date.month)
-        if date.day < 10:
-            day = "0" + str(date.day)
-        else:
-            day = str(date.day)    
-    birth_day = gengo + year + month + day    
+def create_birth_day(date):
+    birth_day = ""
+    if date >= datetime.date(1926,12,26) and date < datetime.date(1989,1,8):
+        gen = "3"
+        y = validate_date(date.year - 1926 + 1)
+        m = validate_date(date.month)
+        d = validate_date(date.day)
+    elif date >= datetime.date(1989,1,8) and date < datetime.date(2019,5,1):
+        gen = "4"
+        y = validate_date(date.year - 1989 + 1)
+        m = validate_date(date.month)
+        d = validate_date(date.day) 
+    birth_day = birth_day.join([gen,y,m,d])
     return birth_day
+
+def validate_date(value):
+    if value < 10:
+        value = "0" + str(value)
+    else:
+        value = str(value)
+    return value
 
 def convert_kanji_kata(kanji):
     ka= kakasi()
@@ -134,4 +133,3 @@ def convert_kanji_kata(kanji):
     conv = ka.getConverter()
     return conv.do(kanji)
 
-# def create_zentaku(_type, from_len, to_length):
