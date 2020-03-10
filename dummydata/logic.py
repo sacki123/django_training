@@ -1,46 +1,53 @@
 import os
 import json
 import random
-import jaconv
 import datetime
-from collections import OrderedDict
+import jaconv
 from gimei import Gimei
-from pykakasi import kakasi
 from faker import Faker, Factory
 fake = Faker('ja_JP')
 f = Factory.create('ja_JP')
 DS = os.path.sep
 
-def create_file(path_output, values, index):
-    with open(os.path.join(path_output,'dummy_' + index), 'w', encoding='shift-jis') as f:
+def create_file(path_output, values, index, type_file):
+    date_now = datetime.datetime.now().strftime("%y%m%d%H%M%S")
+    with open(os.path.join(path_output, date_now + type_file + index), 'w', encoding='cp932') as f:
         for line in values:
             f.write(line)
 
-def create_data(_line, config):
-    index = 2
-    str_line = _line[0:2]
+def create_data(_line, type_file, config_file):
     kanji_name, kana_name = create_kanji_kana_name()
-    for dict_ in config:
+    if type_file == "JS":
+        new_line = process_create(_line, config_file, kanji_name, kana_name)
+    elif type_file == "SK":
+        isha_name = create_kanji_kana_name()[0]    
+        new_line = process_create(_line, config_file, kanji_name, kana_name, isha_name)
+    return new_line
+
+def process_create(_line, config_file, kanji_name, kana_name, isha_name = None):    
+    str_line = ""
+    index = 0
+    for dict_ in config_file:
         key = list(dict_.keys())
         value = dict_[key[0]]
         if index == value["from"]:
-            temp = dummy_data(_line, value["type"], value['from'], value['to'], value['value'], kanji_name, kana_name)
+            temp = dummy_data(_line, value["type"], value['from'], value['to'], value['value'], kanji_name, kana_name, isha_name)
             str_line += temp
             index = value['to']
         else:
             str_line += _line[index:value['from']]
-            temp = dummy_data(_line, value["type"], value['from'], value['to'], value['value'], kanji_name, kana_name)  
+            temp = dummy_data(_line, value["type"], value['from'], value['to'], value['value'], kanji_name, kana_name, isha_name)  
             str_line += temp
             index = value['to']
     if index < len(_line):
         str_line += _line[index:len(_line)] 
     return str_line
 
-def dummy_data(_line, _type, from_length, to_length, value, kanji=None, kana=None):
+def dummy_data(_line, _type, from_length, to_length, value, kanji, kana, isha_name=None):
     temp = ""
     if _type == 9:
         if value == 'date':
-            date_of_birth = fake.date_of_birth(tzinfo=None, minimum_age=20, maximum_age=95)
+            date_of_birth = fake.date_of_birth(tzinfo=None, minimum_age=20, maximum_age=90)
             temp = create_birth_day(date_of_birth)
         elif value == 'num':    
             for ch in _line[from_length:to_length]:
@@ -54,7 +61,7 @@ def dummy_data(_line, _type, from_length, to_length, value, kanji=None, kana=Non
                 if ch == " ":
                     temp += " "
                 else:
-                    temp += jaconv.z2h(str(random.randint(1,9)), digit=True, ascii=True)
+                    temp += jaconv.z2h(str(random.randint(0,9)), digit=True, ascii=True)
         elif value == 'kana':
             temp = kana  
         elif value == 'zipcode':
@@ -73,6 +80,10 @@ def dummy_data(_line, _type, from_length, to_length, value, kanji=None, kana=Non
                     temp += "\u3000"
                 else:
                     temp += jaconv.h2z(str(random.randint(1,9)), digit=True, ascii=True) 
+        elif value == 'isha_name':     
+            temp = isha_name       
+        elif value == 'isha_name_new':
+            temp = filter_isha_name(_line, isha_name, from_length, to_length)            
     return temp
 
 def create_kanji_kana_name():
@@ -86,7 +97,7 @@ def create_kanji_kana_name():
     if len(name_kana) < 20:
         loop = 20 - len(name_kana)
         name_kana = name_kana + (loop * " ")
-    return name_kanji, name_kana
+    return jaconv.h2z(name_kanji, digit=True, ascii=True), name_kana
 
 def create_address(address, value ):
     ad = fake.address()
@@ -99,14 +110,20 @@ def create_address(address, value ):
 
 def create_zipcode(_line, from_length, to_length):
     if _line[from_length:to_length].count(" ") > 1:
-        zc = " " * (to_length -from_length)
+        zc = " " * (to_length - from_length)
     else:
         zc = fake.zipcode()
-        zc = zc[0:to_length-from_length]
+        if to_length - from_length == 7:
+            zc = zc.replace('-', "")
+            zc = zc[0:7]
     return zc
 
 def create_birth_day(date):
     birth_day = ""
+    gen = ""
+    y = ""
+    m = ""
+    d = ""
     if date >= datetime.date(1926,12,26) and date < datetime.date(1989,1,8):
         gen = "3"
         y = validate_date(date.year - 1926 + 1)
@@ -127,9 +144,11 @@ def validate_date(value):
         value = str(value)
     return value
 
-def convert_kanji_kata(kanji):
-    ka= kakasi()
-    ka.setMode('J', 'K')
-    conv = ka.getConverter()
-    return conv.do(kanji)
-
+def filter_isha_name(line, isha_name, from_length, to_length):
+    if line[from_length:to_length][0] == "\u3000":
+        name = "\u3000" * (to_length - from_length)
+    elif line[from_length:to_length] == line[288:298]:
+        name = isha_name
+    elif line[from_length:to_length] != line[288:298]:   
+        name = create_kanji_kana_name()[0]   
+    return jaconv.h2z(name, digit=True, ascii=True)     
