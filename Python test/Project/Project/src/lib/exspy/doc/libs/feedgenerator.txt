@@ -1,0 +1,3 @@
+[feedgenerator 1.5] 
+ 	 BSD
+ 	 https://pypi.python.org/pypi/feedgenerator

@@ -1,0 +1,2 @@
+config make ZU-P02-JZ002
+\etc\default.ini make ZU-PXX-XXYYY

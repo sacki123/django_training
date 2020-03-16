@@ -1,0 +1,11 @@
+AA0459 táo tàu 7
+AB0001 Cake 2.25
+AD0005 Máy tính 4.5
+AF0003 Cream 4.65
+AH0002 coding ok 5.7
+AS0009 panasonic 5
+AW0002 ô tô 4
+BC0002 Candy 1.12
+DD0005 Máy tính 5
+TR0001 ô tô 7
+YY0005 dell electronic 67.7

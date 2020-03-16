@@ -1,0 +1,10 @@
+CATEGORY_ID,CATEGORY_NAME,PRODUCT_CODE,PRODUCT_NAME,PRICE
+A001,Quần áo,QA0001,Quần jean,12
+A001,Quần áo,QA0002,Áo sơ mi,5.6
+A001,Quần áo,QA0003,Găng tay,1.2
+A002,Điện tử,DT0001,TV,300
+A002,Điện tử,DT0002,Tủ lạnh,500
+A002,Điện tử,DT0003,Máy giặt,400
+A003,Đồ gia dụng,GD0001,Bếp gas,50
+A003,Đồ gia dụng,GD0001,Bộ pha trà,15.6
+A003,Đồ gia dụng,GD0001,Ấm nước siêu tốc,30.2

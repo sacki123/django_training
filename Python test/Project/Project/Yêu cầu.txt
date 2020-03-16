@@ -1,0 +1,7 @@
+﻿
+
+
+Khi chạy lệnh : 
+python report \etc\default.ini make ZU-P99-JA058
+
+hệ thống sẽ tạo ra file pdf đã đc in dữ liệu từ file json trong folder Material

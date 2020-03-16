@@ -1,0 +1,82 @@
+[  
+    {
+        "被保険者番号": {
+        "type": "X",
+        "from": 44,
+        "to": 59,
+        "value": "num"
+        }
+    },
+    {
+        "受給者番号": {
+        "type": "X",
+        "from": 67,
+        "to": 75,
+        "value": "num"
+        }
+    },
+    {
+        "受診者カナ氏名": {
+        "type": "X",
+        "from": 75,
+        "to": 95,
+        "value": "kana"
+        }
+    },
+    {
+        "受診者漢字氏名": {
+        "type": "N",
+        "from": 95,
+        "to": 105,
+        "value": "kanji" 
+        }
+    },  
+    {
+        "生年月日": {
+        "type": 9,
+        "from": 105,
+        "to": 112,
+        "value": "date"
+        }
+    },  
+    {
+        "被保険者カナ氏名": {
+        "type": "X",
+        "from": 112,
+        "to": 132,
+        "value": "kana"
+        }
+    },  
+    {
+        "被保険者漢字氏名": {
+        "type": "N",
+        "from": 132,
+        "to": 142,
+        "value": "kanji"
+        }
+    },  
+    {
+        "郵便番号": {
+        "type": "X",
+        "from": 142,
+        "to": 149,
+        "value": "zipcode"
+        }
+    },  
+    {
+        "被保険者漢字住所": {
+        "type": "N",
+        "from": 149,
+        "to": 169,
+        "value": "address"
+        }
+    },  
+    {
+        "被保険者漢字住所_new": {
+        "type": "N",
+        "from": 575,
+        "to": 635,
+        "value": "address"
+        }
+    }                          
+]
