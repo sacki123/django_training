@@ -93,7 +93,7 @@ class Takayama_view(View):
     def get_list_action(self):
         list_action = {
             'create': 'create_event',   
-            'edit': 'edit_event',
+            'edit': 'edit_show',
             'delete': 'delete_event',
             'header': 'get_header_table',
             'create_table': 'create_table'
@@ -117,15 +117,15 @@ class Takayama_view(View):
         
     def create_uuid(self):
         update_params = {
-        'rid': uuid.uuid4(),
-        'did': uuid.uuid4()
+        'rid': str(uuid.uuid4()),
+        'did': str(uuid.uuid4())
         }
         return update_params
 
     def create_event(self, json):
         inputs = self.get_inputs()
         inputs = self.validate_inputs(inputs)
-        inputs.update(self.create_uuid())
+        # inputs.update(self.create_uuid())
         json['message'] = 'Success'
         try:
             record = INSURER_TEST(**inputs)
@@ -189,6 +189,12 @@ class Takayama_view(View):
         data, riddata = self.format_data_table(results)
         json = self.json_datatable(json, data, riddata)
         return json
+
+    def edit_show(self, json):
+        param = self.get_inputs()
+        inputs = self.validate_inputs(param)
+        result = SqlLogic().get_data_query(inputs)
+        return result
 
         
 
