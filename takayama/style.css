@@ -1,9 +1,12 @@
 .dataTables_wrapper table th {
-    background-color: cornflowerblue;
+    background-color: skyblue ;
     white-space: nowrap;
     color: cornsilk;
+    
 }
 
 .dataTables_wrapper table td {
     white-space: nowrap;
+    height: 18px;
+    text-align: right;
 }

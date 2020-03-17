@@ -94,6 +94,7 @@ class Takayama_view(View):
         list_action = {
             'create': 'create_event',   
             'edit': 'edit_show',
+            'edit_execute': 'edit_execute',
             'delete': 'delete_event',
             'header': 'get_header_table',
             'create_table': 'create_table'
@@ -193,8 +194,30 @@ class Takayama_view(View):
     def edit_show(self, json):
         param = self.get_inputs()
         inputs = self.validate_inputs(param)
-        result = SqlLogic().get_data_query(inputs)
-        return result
+        result = SqlLogic().get_fulldata_query(inputs)
+        json['items'] = result[0]
+        json['rid'] = inputs['rid']
+        return json
+
+    def edit_execute(self, json):
+        param = self.get_inputs()
+        inputs = self.validate_inputs(param)
+        request = self.get_request
+        # json = SqlLogic().edit_execute(request, inputs, json)
+        obj = INSURER_TEST
+        try:
+            item = obj.objects.get(rid=inputs['rid'])
+            for key, value in inputs.items():
+                setattr(item, key, value)
+            obj.save()
+        except Exception as e:
+            json['error'] = e
+            json['status'] = 500
+            return json
+        json['message'] = "Edit success" 
+        return json
+        # return json
+
 
         
 
