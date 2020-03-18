@@ -132,7 +132,7 @@ function create_datatable(results){
     table.off('deselect.dt');
 }
 
-function edit_event(){
+function modal_call(url){
     items = [];
     var selects = datatable.rows({
         selected: true
@@ -147,37 +147,65 @@ function edit_event(){
             console.log(e);
         }
     $.ajax({
-        url: 'edit',
+        url: 'modal_show',
         type: 'post',
         data: {'rid':items[0]},
         dataType: 'json',
         cache: false
     }).done(function(results) {
-        modal_show(results)
+        modal_show(url, results);
     }).fail(function(error){
-
+        alert(error['error']);
     })
 }
 
-function edit_execute(rid){
-    data = $('#form_modal_edit').serialize();
-    data += '&rid=' + rid
+function edit_delete_execute(url, rid){
+    $('#bt_' + url).attr('disabled', true);
+    data = $('#form_modal_' + url).serialize();
+    data += '&rid=' + rid;
     $.ajax({
-        url: 'edit_execute',
+        url: url + '_execute',
         type: 'post',
         data: data,
         dataType: 'json'
     }).done(function(results){
-        alert(results['message'])
+        alert(results['message']);
     }).fail(function(error){
-
+        alert(error['message']);
     })
 }
 
-function modal_show(data){
+function get_name_model(){
+    items = [];
+    var selects = datatable.rows({
+        selected: true
+    });
+    for (var key in selects[0])
+        select = selects[0][key];
+        try {
+            var item = $('#'+ select);
+            var i = item.attr('dataid');
+            items.push(i);
+        } catch (e) {
+            console.log(e);
+        }
+    $.ajax({
+        url: 'name_model',
+        type: 'post',
+        data: {'rid':items[0]},
+        dataType: 'json',
+        cache: false
+    }).done(function(results) {
+        modal_export(results);
+    }).fail(function(error){
+        alert(error['error']);
+    })
+};
+
+function modal_show(id, data){
     var h ="";
     h += "<script type='text/javascript'>datetimepicker_load();</script>";
-    h += "<div class= 'modal fade' id='modal_edit' role='dialog'>";
+    h += "<div class= 'modal fade' id=" + "'modal_" + id + "'" + "role='dialog'>";
     h += "<div class='modal-dialog modal-dialog-centered modal-xl text-center'>";
     h += "<div class='modal-content'>";
     h += "<div class='modal-header'>";
@@ -187,7 +215,7 @@ function modal_show(data){
     h += "<div class='container'>";
     h += "<div class='card text-center text-dark w-100 mx-auto'>";
     h += "<div class='card-body mx-auto mt-3'>";
-	h += "<form id='form_modal_edit' onsubmit='create_event()'>";
+	h += "<form role='form' id='form_modal_" + id + "'" + ">";
     h += "<div class='form-group row'>";
 	h += "<label for='name' class='col-md-3 col-form-label'>保険種別TCD</label>";
 	h += "<div class='col-md-3'>";
@@ -230,10 +258,44 @@ function modal_show(data){
     h += "<div class='input-group-text'><i class='fa fa-calendar-alt'></i></div></div></div></div></div>";
     h += "</form></div></div></div></div>";
     h += "<div class='modal-footer'>";
-    h += "<button type='button' class='btn btn-info' data-toggle='modal'" + 'onclick=edit_execute("' + data['rid']+ '");> 実行</button>'
-	h += "<button type='button' class='btn btn-info' data-dismiss='modal'>閉じる</button></div>"
+    h += "<button id='bt_" + id + "'" + "type='button' class='btn btn-info' data-toggle='modal'" + 'onclick=edit_delete_execute(' + "'" + id + "'" + ',' + "'" + data['rid'] + "'" + ');> 実行</button>'
+	h += "<button id='bt_close' type='button' class='btn btn-info' data-dismiss='modal'" + 'onclick=search_event(); >閉じる</button></div>'
 	h += "</div></div></div></div>";									
     $('body').prepend(h);
-    modal = $('#modal_edit').modal();
+    modal = $('#modal_'+ id).modal();
 }
 
+function modal_export(data){
+    h = "";
+    h += "<div class= 'modal fade' id='modal_export' role='dialog'>";
+    h += "<div class='modal-dialog modal-dialog-centered modal-xl'>";
+    h += "<div class='modal-content'>";
+    h += "<div class='modal-header'style='background-color: mediumseagree;'>";
+    h += "<button type='button' class='close' data-dismiss='modal'>&times;</button></div>";
+    h += "<h4 class='text-info' style='text-align: left; padding-left: 35px;'><i class='far fa-edit'></i>保険者　エクスポート</h4>";
+    h += "<div class='modal-body'>";
+    h += "<div class='container'>";
+    h += "<div class='row-fluid'>";
+	h += "<form class='form-horizontal' role='form' id='form_modal_export'>";
+    h += "<div class='form-group'>";
+	h += "<label for='name' class='col-xs-3 col-sm-2 col-form-label'>ファイル形式<span class='badge badge-pill badge-danger'>必須</span></label>";
+	h += "<div class='col-xs-8 col-sm-7'>";
+    h += "<select class='form-control input-xlarge' id='select_export' name='s'>";
+    h += "<option value='excel' selected>EXCEL</option>";
+    h += "<option value='json'>JSON</option></select></div></div>";
+    h += "<div class='form-group checkbox_master'>";
+    for (var key in data['name']){
+        h += '<label class="form-check-label"><input name='+ "'" + key +"'" + 'id='+ "'" + key +"'" + " type='checkbox'/>" + data['name'][key] + '</label>';
+    }
+    
+    h += "</form></div></div></div>";
+    h += "<div class='modal-footer'>";
+    // h += "<button id='bt_" + id + "'" + "type='button' class='btn btn-info' data-toggle='modal'" + 'onclick=edit_delete_execute(' + "'" + id + "'" + ',' + "'" + data['rid'] + "'" + ');> 実行</button>'
+    // h += "<button type='button' id='bt_export'>実行</button>"
+    // h += "<button id='bt_close' type='button' class='btn btn-info' data-dismiss='modal'" + 'onclick=search_event(); >閉じる</button></div>'
+
+    h += "</div></div></div></div>";
+    
+    $('body').prepend(h);
+    $('#modal_export').modal();
+}

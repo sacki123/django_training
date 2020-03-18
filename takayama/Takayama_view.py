@@ -93,11 +93,13 @@ class Takayama_view(View):
     def get_list_action(self):
         list_action = {
             'create': 'create_event',   
-            'edit': 'edit_show',
+            'modal_show': 'get_data_show',
             'edit_execute': 'edit_execute',
-            'delete': 'delete_event',
+            'delete_execute': 'delete_execute',
             'header': 'get_header_table',
-            'create_table': 'create_table'
+            'create_table': 'create_table',
+            'name_model': 'get_name_model'
+
         }
         return list_action
 
@@ -126,7 +128,7 @@ class Takayama_view(View):
     def create_event(self, json):
         inputs = self.get_inputs()
         inputs = self.validate_inputs(inputs)
-        # inputs.update(self.create_uuid())
+        inputs.update(self.create_uuid())
         json['message'] = 'Success'
         try:
             record = INSURER_TEST(**inputs)
@@ -145,6 +147,21 @@ class Takayama_view(View):
                 continue
             verbose_names.append({'title': key.verbose_name})
         json['header'] = verbose_names   
+        return json
+
+    #get verbose name
+    def get_name_model(self, json):
+        obj = getClass(INSURER)
+        fields = obj._meta.fields
+        verbose_names = {}
+        for key in fields:
+            if key.verbose_name == 'RID' or key.verbose_name == 'DID':
+                continue
+            verbose_names[key.name] = key.verbose_name
+        json['name'] = verbose_names 
+        param = self.get_inputs()
+        inputs = self.validate_inputs(param) 
+        json['rid'] = inputs['rid']
         return json
 
     def get_datatable(self, inputs):
@@ -191,7 +208,8 @@ class Takayama_view(View):
         json = self.json_datatable(json, data, riddata)
         return json
 
-    def edit_show(self, json):
+    #get data for create modal
+    def get_data_show(self, json):
         param = self.get_inputs()
         inputs = self.validate_inputs(param)
         result = SqlLogic().get_fulldata_query(inputs)
@@ -203,20 +221,15 @@ class Takayama_view(View):
         param = self.get_inputs()
         inputs = self.validate_inputs(param)
         request = self.get_request
-        # json = SqlLogic().edit_execute(request, inputs, json)
-        obj = INSURER_TEST
-        try:
-            item = obj.objects.get(rid=inputs['rid'])
-            for key, value in inputs.items():
-                setattr(item, key, value)
-            obj.save()
-        except Exception as e:
-            json['error'] = e
-            json['status'] = 500
-            return json
-        json['message'] = "Edit success" 
+        json = SqlLogic().edit_execute(request, inputs, json)
         return json
-        # return json
+
+    def delete_execute(self, json):
+        param = self.get_inputs()
+        inputs = self.validate_inputs(param)
+        request = self.get_request
+        json = SqlLogic().delete_execute(request, inputs, json)
+        return json
 
 
         
