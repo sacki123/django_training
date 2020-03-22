@@ -173,7 +173,7 @@ function edit_delete_execute(url, rid){
     }).fail(function(error){
         alert(error['message']);
     })
-}
+};
 
 function get_name_model(){
     items = [];
@@ -199,6 +199,21 @@ function get_name_model(){
         modal_export(results);
     }).fail(function(error){
         alert(error['error']);
+    })
+};
+
+function export_file(rid){
+    data = $('#form_modal_export').serialize();
+    data += '&rid=' + rid;
+    $.ajax({
+        url: 'excel',
+        type: 'post',
+        data: data,
+        dataType: 'json'
+    }).done(function(results){
+        location.href = results['url'];
+    }).fail(function(error){
+        alert(error['message']);
     })
 };
 
@@ -280,22 +295,18 @@ function modal_export(data){
     h += "<div class='form-group'>";
 	h += "<label for='name' class='col-xs-3 col-sm-2 col-form-label'>ファイル形式<span class='badge badge-pill badge-danger'>必須</span></label>";
 	h += "<div class='col-xs-8 col-sm-7'>";
-    h += "<select class='form-control input-xlarge' id='select_export' name='s'>";
+    h += "<select class='form-control input-xlarge' id='select_export' name='choice'>";
     h += "<option value='excel' selected>EXCEL</option>";
     h += "<option value='json'>JSON</option></select></div></div>";
     h += "<div class='form-group checkbox_master'>";
     for (var key in data['name']){
         h += '<label class="form-check-label"><input name='+ "'" + key +"'" + 'id='+ "'" + key +"'" + " type='checkbox'/>" + data['name'][key] + '</label>';
     }
-    
     h += "</form></div></div></div>";
     h += "<div class='modal-footer'>";
-    // h += "<button id='bt_" + id + "'" + "type='button' class='btn btn-info' data-toggle='modal'" + 'onclick=edit_delete_execute(' + "'" + id + "'" + ',' + "'" + data['rid'] + "'" + ');> 実行</button>'
-    // h += "<button type='button' id='bt_export'>実行</button>"
-    // h += "<button id='bt_close' type='button' class='btn btn-info' data-dismiss='modal'" + 'onclick=search_event(); >閉じる</button></div>'
-
+    h += "<button type='button' id='bt_export' class='btn btn-info'" + 'onclick=export_file(' + "'" + data['rid'] + "'" + ");>実行</button>"
+    h += "<button id='bt_close' type='button' class='btn btn-info' data-dismiss='modal'" + 'onclick=search_event(); >閉じる</button></div>'
     h += "</div></div></div></div>";
-    
     $('body').prepend(h);
     $('#modal_export').modal();
 }
