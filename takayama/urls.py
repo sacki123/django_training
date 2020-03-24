@@ -33,13 +33,16 @@ from zm.page import system_setting
 from zm.page.menu import urls
 from zm.page.example.view import Example
 from .Takayama_view import Takayama_view
+from .Export_master import Export_file_view
 
 # ------------------------------------------------------------
 ## Variable Section
 # ------------------------------------------------------------
  
 urlpatterns = [
-    re_path(r'^(?P<uri>.*)', Takayama_view.as_view()),
+    re_path(r'^export/', Export_file_view),
+    re_path(r'(?P<uri>.*)', Takayama_view.as_view())
+    
 ]
 
 # ------------------------------------------------------------

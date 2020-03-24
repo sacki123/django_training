@@ -8,11 +8,9 @@ from django.http import HttpResponse
 from zm.common.model import getClass
 db_name = 'INSURER_TEST'
 mimetype = {'excel': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
-			'json': 'text/plain'
-		}
+			'json': 'text/plain'}
+		
 def Export_file_view(request):
-	data_header = []
-	data_row = []
 	tempdir = tempfile.gettempdir()
 	file_id = request.GET.getlist('target')
 	json_path = os.path.join(tempdir, file_id[0] + '.json')
@@ -26,7 +24,21 @@ def Export_file_view(request):
 		fields = obj._meta.fields
 		item = obj.objects.values().get(rid = rid)
 		response = HttpResponse(content_type = mimetype[file_type] + '; charset=UTF-8-sig')	
+		if file_type == 'json':
+			data = {}
+			json_data = []
+			for key in select_col:
+				if key == 'choice' or key == 'rid':
+					continue
+				elif key in item:
+					data[key] = str(item.get(key))
+			json_data.append(data)	
+			file_name = urllib.parse.quote('Insurer_test.json'.encode('UTF-8'))
+			response['Content-Disposition'] = "attachment; filename*=UTF-8''"+ file_name
+			response.write(json.dumps(data, ensure_ascii=False, indent=2))
 		if file_type == 'excel':
+			data_header = []
+			data_row = []
 			for column in select_col:
 				if column == 'choice' or column == 'rid':
 					continue
@@ -42,23 +54,9 @@ def Export_file_view(request):
 			ws = wb.active
 			ws.append(data_header)
 			ws.append(data_row)
-			wb.save(response)
-		if file_type == 'json':
-			json_data = []
-			data = {}
-			for key in select_col:
-				if key == 'choice' or key == 'rid':
-					continue
-				if key in item:
-					data[key] = item.get(key)
-			json_data.append(data)	
-			file_name = urllib.parse.quote('Insurer_test.json'.encode('UTF-8'))
-			response['Content-Disposition'] = "attachment; filename*=UTF-8''"+ file_name
-			response.write(json.dumps(data, ensure_ascii=False, indent=2))
+			wb.save(response)	
 	except Exception as e:
-		pass
+		return e
 	finally:
 		os.remove(json_path)
 	return response
-
-

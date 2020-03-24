@@ -38,27 +38,7 @@ class Takayama_view(View):
 
     def get(self,request, *args, **kwargs):
         self.get_request = request
-        self.params['Takayama_form'] = Takayama_form()
-
-        f = open('/opt/services/djangoapp/src/webapp/zm/page/insurer_test//Takayama_model_fieldname_convert.json', 'r')
-        json_table = json.load(f)
-
-        meta_fields = TAKAYAMA_MODEL._meta.get_fields()
-        column_list = list()
-        for i,fields in enumerate(meta_fields):
-            column_list.append(fields.name)
-
-#        self.params['field_physical_name'] = column_list.copy()
-
-        for index, name in enumerate(column_list):
-            for key in json_table:
-                if(name == key):
-                    column_list[index] = json_table[key]                            
-            self.params['field_logical_name'] = column_list
-
-        self.params['Takayama_model'] =TAKAYAMA_MODEL.objects.all()
-
-        return render(request,'takayama/Takayama_template.html',self.params)
+        return render(request,'takayama/Takayama_template.html')
 
     def post(self, request, *args, **kwargs):
         self.get_request = request
@@ -98,8 +78,8 @@ class Takayama_view(View):
             'delete_execute': 'delete_execute',
             'header': 'get_header_table',
             'create_table': 'create_table',
-            'name_model': 'get_name_model'
-
+            'name_model': 'get_name_model',
+            'excel': 'export_excel'
         }
         return list_action
 
@@ -134,7 +114,7 @@ class Takayama_view(View):
             record = INSURER_TEST(**inputs)
             record.save()
         except Exception as e:
-            json['error'] = e
+            json['error'] = e[0]
             json['status'] = 202
         return json
 
@@ -231,6 +211,11 @@ class Takayama_view(View):
         json = SqlLogic().delete_execute(request, inputs, json)
         return json
 
-
+    def export_excel(self, json):
+        param = self.get_inputs()
+        inputs = self.validate_inputs(param)
+        request = self.get_request
+        json = SqlLogic().excel_execute(request, inputs, json)
+        return json
         
 

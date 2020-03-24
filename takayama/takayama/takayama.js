@@ -1,5 +1,5 @@
-var datatable = ""
-
+var datatable = "";
+var checkbox_checked = false;
 $(document).ready(function(){
     datetimepicker_load()
 })
@@ -37,6 +37,7 @@ function datetimepicker_load(){
 }
 
 function create_event(){
+    $('#btn_create').attr('disabled', true);
     var data = $('#'+'form_modal_create').serialize();
     $.ajax({
         url: 'create',
@@ -48,6 +49,8 @@ function create_event(){
     }).done(function(results){
         if (results['status'] == 200){
             alert(results['message']);
+            $('#modal_create').modal('hide');
+            search_event();
         }
     }).fail(function(results){
         alert(results['error']);
@@ -132,7 +135,7 @@ function create_datatable(results){
     table.off('deselect.dt');
 }
 
-function modal_call(url){
+function get_data_for_modal(url){
     items = [];
     var selects = datatable.rows({
         selected: true
@@ -159,20 +162,32 @@ function modal_call(url){
     })
 }
 
-function edit_delete_execute(url, rid){
-    $('#bt_' + url).attr('disabled', true);
-    data = $('#form_modal_' + url).serialize();
-    data += '&rid=' + rid;
-    $.ajax({
-        url: url + '_execute',
-        type: 'post',
-        data: data,
-        dataType: 'json'
-    }).done(function(results){
-        alert(results['message']);
-    }).fail(function(error){
-        alert(error['message']);
-    })
+function edit_delete_execute(id, rid){
+    var conf = true;
+    $('#bt_' + id).attr('disabled', true);
+    if (id == 'delete'){
+        conf = confirm('削除したいですか?')
+    }
+    if (id == 'edit'){
+        conf = confirm('編集したいですか?') 
+    }    
+    if (conf == true){
+        data = $('#form_modal_' + id).serialize();
+        data += '&rid=' + rid;
+        $.ajax({
+            url: id + '_execute',
+            type: 'post',
+            data: data,
+            dataType: 'json'
+        }).done(function(results){
+            alert(results['message']);
+            $('#modal_'+ id).modal('hide')
+            search_event()
+        }).fail(function(error){
+            alert(error['message']);
+        })
+    }
+    else $('#bt_' + id).removeAttr('disabled', true);
 };
 
 function get_name_model(){
@@ -203,6 +218,7 @@ function get_name_model(){
 };
 
 function export_file(rid){
+    // $('#bt_export').attr('disabled', true);
     data = $('#form_modal_export').serialize();
     data += '&rid=' + rid;
     $.ajax({
@@ -216,6 +232,26 @@ function export_file(rid){
         alert(error['message']);
     })
 };
+
+function checkbox_all(){
+    
+    if (checkbox_checked == false){
+        checkbox = $('.checkbox_export').prop('checked', true);
+        checkbox_checked = true;
+        btn_checkbox = $('#select_all');
+        btn_checkbox.text('未チェック');
+        btn_checkbox.removeClass('btn-info');
+        btn_checkbox.addClass('btn-danger');
+    }
+    else {
+        checkbox = $('.checkbox_export').prop('checked', false);
+        checkbox_checked = false;
+        btn_checkbox = $('#select_all');
+        btn_checkbox.text('チェック済み');
+        btn_checkbox.removeClass('btn-danger');
+        btn_checkbox.addClass('btn-info');
+    }
+}
 
 function modal_show(id, data){
     var h ="";
@@ -277,7 +313,12 @@ function modal_show(id, data){
 	h += "<button id='bt_close' type='button' class='btn btn-info' data-dismiss='modal'" + 'onclick=search_event(); >閉じる</button></div>'
 	h += "</div></div></div></div>";									
     $('body').prepend(h);
-    modal = $('#modal_'+ id).modal();
+    modal = $('#modal_'+ id).modal({
+        'backdrop': 'static',
+        'keyboard': false,
+        'show': true,
+        'focus': false
+    });
 }
 
 function modal_export(data){
@@ -293,14 +334,16 @@ function modal_export(data){
     h += "<div class='row-fluid'>";
 	h += "<form class='form-horizontal' role='form' id='form_modal_export'>";
     h += "<div class='form-group'>";
-	h += "<label for='name' class='col-xs-3 col-sm-2 col-form-label'>ファイル形式<span class='badge badge-pill badge-danger'>必須</span></label>";
-	h += "<div class='col-xs-8 col-sm-7'>";
+	h += "<label for='name' class='col-xs-3 col-md-2 col-form-label'>ファイル形式<span class='badge badge-pill badge-danger'>必須</span></label>";
+	h += "<div class='col-xs-8 col-md-7'>";
     h += "<select class='form-control input-xlarge' id='select_export' name='choice'>";
     h += "<option value='excel' selected>EXCEL</option>";
     h += "<option value='json'>JSON</option></select></div></div>";
+    h += "<div class='col-xs-8 col-md-2'>";
+    h += "<button type='button' id='select_all' class='btn btn-info' onclick='checkbox_all()'>チェック済み</button></div>";
     h += "<div class='form-group checkbox_master'>";
     for (var key in data['name']){
-        h += '<label class="form-check-label"><input name='+ "'" + key +"'" + 'id='+ "'" + key +"'" + " type='checkbox'/>" + data['name'][key] + '</label>';
+        h += '<label class="form-check-label"><input' + " class='checkbox_export'" + ' name='+ "'" + key +"'" + ' id='+ "'" + key +"'" + " type='checkbox'/>" + data['name'][key] + '</label>';
     }
     h += "</form></div></div></div>";
     h += "<div class='modal-footer'>";
@@ -308,5 +351,10 @@ function modal_export(data){
     h += "<button id='bt_close' type='button' class='btn btn-info' data-dismiss='modal'" + 'onclick=search_event(); >閉じる</button></div>'
     h += "</div></div></div></div>";
     $('body').prepend(h);
-    $('#modal_export').modal();
+    $('#modal_export').modal({
+        'backdrop': 'static',
+        'keyboard': false,
+        'show': true,
+        'focus': false
+    });
 }

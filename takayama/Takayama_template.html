@@ -6,9 +6,6 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-	<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css"/> -->
-	<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/sl-1.3.1/datatables.min.css"/> -->
-	<link href="/css/plugins/datatables.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css"/>
 	
@@ -174,11 +171,11 @@
 					<div class="card-body">
 						<div class="inline-block">
 							<button type="button" class="inline-block btn btn-info btn-g" data-toggle="modal"
-								data-target="#modal-create">新規作成</button>
-							<button type="button" class="inline-block btn btn-info btn-g" onclick="modal_call('edit')">編集</button>
+								data-target="#modal_create">新規作成</button>
+							<button type="button" class="inline-block btn btn-info btn-g" onclick="get_data_for_modal('edit')">編集</button>
 							<button type="button" class="inline-block btn btn-info btn-g" data-toggle="modal"
 								data-target="#modal-detail">詳細</button>
-							<button type="button" class="inline-block btn btn-info btn-g" onclick="modal_call('delete')">削除</button>
+							<button type="button" class="inline-block btn btn-info btn-g" onclick="get_data_for_modal('delete')">削除</button>
 							<button type="button" class="inline-block btn btn-info btn-g" onclick="get_name_model()">エクスポート</button>
 						</div>
 					</div>
@@ -189,7 +186,7 @@
 		<!-- モーダルウィンドウ -->
 
 		<!-- 新規作成モーダル -->
-		<div class="modal fade" id="modal-create" tabindex="-1" role="dialog" aria-labelledby="modal-create-label"
+		<div class="modal fade" data-backdrop='static' id="modal_create" tabindex="-1" role="dialog" aria-labelledby="modal-create-label"
 			aria-hidden="true">
 	
 			<div class="modal-dialog modal-dialog-centered modal-xl text-center" role="document">
@@ -301,8 +298,8 @@
 								
 										</div>
 										<div class="modal-footer">
-											<button type="button" class="btn btn-secondary" data-toggle="modal" onclick="create_event();"> 実行</button>
-											<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="search_event();">閉じる</button>
+											<button type="button" class="btn btn-info" data-toggle="modal" id='btn_create' onclick="create_event();"> 実行</button>
+											<button type="button" class="btn btn-info" data-dismiss="modal" onclick="search_event();">閉じる</button>
 										</div>
 									</form>
 								</div>

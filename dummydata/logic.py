@@ -11,7 +11,7 @@ DS = os.path.sep
 
 def create_file(path_output, values, index, type_file):
     date_now = datetime.datetime.now().strftime("%y%m%d%H%M%S")
-    with open(os.path.join(path_output, date_now + type_file + index), 'w', encoding='cp932') as f:
+    with open(os.path.join(path_output, date_now + type_file + '_ダミーデータ_' + index), 'w', encoding='cp932') as f:
         for line in values:
             f.write(line)
 
@@ -60,15 +60,23 @@ def dummy_data(_line, _type, from_length, to_length, value, kanji, kana, isha_na
             for ch in _line[from_length:to_length]:
                 if ch == " ":
                     temp += " "
+                elif ch == '-':
+                    temp += '-'    
                 else:
                     temp += jaconv.z2h(str(random.randint(0,9)), digit=True, ascii=True)
         elif value == 'kana':
-            temp = kana  
+            if check_name(_line, from_length, to_length, value):
+                temp = kana
+            else:
+                temp = _line[from_length:to_length]      
         elif value == 'zipcode':
             temp = create_zipcode(_line, from_length, to_length) 
     elif _type == "N":
         if value == "kanji":
-            temp = kanji
+            if check_name(_line, from_length, to_length, value):
+                temp = kanji
+            else:
+                temp = _line[from_length:to_length] 
         elif value == "address":
             if (_line[from_length:to_length][0] == "\u3000"):
                 temp = "\u3000" * (to_length - from_length)
@@ -80,11 +88,26 @@ def dummy_data(_line, _type, from_length, to_length, value, kanji, kana, isha_na
                     temp += "\u3000"
                 else:
                     temp += jaconv.h2z(str(random.randint(1,9)), digit=True, ascii=True) 
-        elif value == 'isha_name':     
-            temp = isha_name       
+        elif value == 'isha_name':
+            if check_name(_line, from_length, to_length, value):
+                temp = isha_name
+            else:
+                temp = _line[from_length:to_length]            
         elif value == 'isha_name_new':
             temp = filter_isha_name(_line, isha_name, from_length, to_length)            
     return temp
+
+def check_name(line, from_length, to_length, _type):
+    if _type == 'kana':
+        if line[from_length:to_length][0] == " ":
+            return False
+        else:
+            return True    
+    elif _type == 'kanji' or _type == 'isha_name':
+        if line[from_length:to_length][0] == "\u3000":
+            return False
+        else:
+            return True    
 
 def create_kanji_kana_name():
     g = Gimei()
@@ -110,7 +133,7 @@ def create_address(address, value ):
 
 def create_zipcode(_line, from_length, to_length):
     if _line[from_length:to_length].count(" ") > 1:
-        zc = " " * (to_length - from_length)
+        zc = " " * (to_length -from_length)
     else:
         zc = fake.zipcode()
         if to_length - from_length == 7:
