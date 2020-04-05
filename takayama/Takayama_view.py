@@ -22,11 +22,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.db import transaction
-from .Takayama_form import Takayama_form
 from .logic import SqlLogic
 from zm.models.TAKAYAMA_MODEL import TAKAYAMA_MODEL
 from zm.models.INSURER_TEST import INSURER_TEST
-
 
 INSURER = 'INSURER_TEST'
 class Takayama_view(View):
@@ -72,6 +70,7 @@ class Takayama_view(View):
 
     def get_list_action(self):
         list_action = {
+            'load_page': 'load_page',
             'create': 'create_event',   
             'modal_show': 'get_data_show',
             'edit_execute': 'edit_execute',
@@ -104,6 +103,20 @@ class Takayama_view(View):
         'did': str(uuid.uuid4())
         }
         return update_params
+
+    def load_page(self, json):
+        items = []
+        fields = INSURER_TEST._meta.fields
+        for field in fields:
+            item = {}
+            if field.get_internal_type() == 'UUIDField':
+                continue
+            item['logic_name'] = field.verbose_name
+            item['name'] = field.name
+            item['type_data'] = field.get_internal_type()
+            items.append(item)
+        json['items'] = items
+        return json
 
     def create_event(self, json):
         inputs = self.get_inputs()
@@ -159,33 +172,71 @@ class Takayama_view(View):
                 filter_inputs.update({data_input[0]:data_input[1]})
         return filter_inputs       
 
-    def json_datatable(self, json, data, riddata):
-        json.clear()
-        json['draw'] = 1
-        json['recordsTotal'] = len(data)
-        json['recordsFiltered'] = len(data)
-        json['data'] = data
-        json['riddata'] = riddata
-        return json
-
-    def format_data_table(self, results):
-        data = []
+    def format_data_table(self, results, params, json, inputs):
+        datatable = []
         riddata = []
-        for i in results:
-            riddata.append(i[0])
+        data_list = []
+        sql = ""
+        order_by = {}
+        start = params['start']
+        search_value = params['search[value]']
+        limit_value = params['length']
+        order_no = params['order[0][column]']
+        order_dir = params['order[0][dir]']
+       
+        #Check page length with the number of records 
+        if (len(results) < (int(start) + int(limit_value))):
+            end = len(results)
+        else:
+            end = int(start) + int(limit_value)    
+      
+        #when page length by all     
+        if int(limit_value) == -1 or search_value != '':
+            end = len(results)
+       
+        #when event is sort_by    
+        if order_no != '0' or order_dir != 'asc':
+            field_list = INSURER_TEST._meta.fields
+            for field in range(2,len(field_list)):
+                if (int(order_no) + 2) == field:
+                    order_by[field_list[field].name] = order_dir
+                    break 
+            sql = SqlLogic().create_full_sql_query(inputs) + SqlLogic().create_order(order_by)
+            results = SqlLogic().sql_execute(sql, inputs)
+        for index in range(int(start), end):
+            data_list.append(results[index])
+        for item in data_list:
             row = []
-            for j in range(2, len(i)):
-                row.append(i[j])    
-            data.append(row)
-        return data, riddata
-
+            if search_value == "":
+                row = list(item[2:len(item)]) 
+                datatable.append(row)
+                riddata.append(item[0])
+            else:
+                row = list(item[2:len(item)]) 
+                for i in row:        
+                    if search_value in str(i):        
+                        datatable.append(row)
+                        riddata.append(item[0])
+                        break
+        json.clear()
+        json['draw'] = self.get_request.POST.get('draw', 1)
+        json['recordsTotal'] = len(results)
+        if search_value == "":
+            json['recordsFiltered'] = len(results)
+        else:
+            json['recordsFiltered'] = len(datatable)   
+        if json['recordsTotal'] != json['recordsFiltered']:
+            json['recordsTotal'] = len(data_list)    
+        json['data'] = datatable
+        json['riddata'] = riddata                
+        return json
+    
     def create_table(self, json):
         params = self.get_inputs()
         filter_params = self.get_datatable(params)
         inputs = self.validate_inputs(filter_params)
         results = SqlLogic().get_data_query(inputs)
-        data, riddata = self.format_data_table(results)
-        json = self.json_datatable(json, data, riddata)
+        json = self.format_data_table(results, params, json, inputs)
         return json
 
     #get data for create modal
@@ -217,5 +268,3 @@ class Takayama_view(View):
         request = self.get_request
         json = SqlLogic().excel_execute(request, inputs, json)
         return json
-        
-

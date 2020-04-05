@@ -8,12 +8,11 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css"/>
-	
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"/>
 	<!-- 追加CSS -->
 	<link rel="stylesheet" href="/css/takayama/style.css">
 	<link rel="stylesheet" href="/css/takayama/datatables.min.css">
-	<script src="https://code.jquery.com/jquery-3.1.1.min.js"
-		integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous">;</script>
 	<title>保険者番号変換情報</title>
 </head>
 
@@ -24,7 +23,7 @@
 	</noscript>
 	<header class="py-2">
 		<div class="container">
-			<a href="#"><img class="logo" src="img/logo.png" alt="全柔協"></a>
+			<a href="#"><img class="logo" src="/images/ajax-loader.gif" alt="全柔協"></a>
 		</div>
 	</header>
 
@@ -49,101 +48,7 @@
 						<div id="main-card">
 							<div class="card-body">
 								<form id='form_main'>
-									<div class="form-group row">
-										<label for="name" class="col-md-3 col-form-label">
-											保険種別TCD
-										</label>
-										<div class="col-md-3">
-											<input class="form-control" name='insurance_category_tcd' type="text"/>
-										</div>
-										<label for="name" class="col-md-3 col-form-label">
-											保険者法別番号
-										</label>
-										<div class="col-md-3">
-											<input class="form-control" name='insurer_law_number' type="text"/>
-										</div>
-									</div>
-									<div class="form-group row">											
-										<label for="name" class="col-md-3 col-form-label">
-											保険者都道府県番号
-										</label>
-										<div class="col-md-3">
-											<input class="form-control" name='insurer_pref_number' type="text"/>
-										</div>
-										<label for="name" class="col-md-3 col-form-label">
-											電話番号
-										</label>
-										<div class="col-md-3">
-											<input class="form-control" name='phone_number' type="text"/>
-										</div>
-									</div>
-									<div class="form-group row">
-										<label for="name" class="col-md-3 col-form-label">
-											保険者番号
-										</label>
-										<div class="col-md-3">
-											<input class="form-control" name='insurer_number' type="text" />
-										</div>
-										<label for="name" class="col-md-3 col-form-label">
-											全柔協保険者番号
-										</label>
-										<div class="col-md-3">
-										</div>
-									</div>
-									<div class="form-group row">
-										<label for="name" class="col-md-3 col-form-label">
-											作成者
-										</label>
-										<div class="col-md-3">
-											<input class="form-control" name='create_user' type="text"/>
-										</div>
-									</div>
-									<div class="form-group row">
-										<label for="name" class="col-md-3 col-form-label">
-											作成日
-										</label>
-										<div class="col-md-4">
-											<div class="input-group date datetimepicker-master"
-												id="datetimepicker-search-0-1" data-target-input="nearest">
-												<input class="form-control datetimepicker-input"
-													data-target="#datetimepicker-search-0-1" name='create_date' type="text"/>
-												<div class="input-group-prepend"
-													data-target="#datetimepicker-search-0-1"
-													data-toggle="datetimepicker">
-													<div class="input-group-text"><i
-															class="far fa-calendar-alt"></i></div>
-												</div>
-											</div>
-										</div>
-										
-									</div>
-									<div class="form-group row">
-										<label for="name" class="col-md-3 col-form-label">
-											更新者
-										</label>
-										<div class="col-md-3">
-											<input class="form-control" id="name" name='update_user' type="text" />
-										</div>
-									</div>
-									<div class="form-group row">
-										<label for="name" class="col-md-3 col-form-label">
-											更新日
-										</label>
-										<div class="col-md-4">
-											<div class="input-group date datetimepicker-master"
-												id="datetimepicker-search-0-2" data-target-input="nearest">
-												<input class="form-control datetimepicker-input"
-													data-target="#datetimepicker-search-0-2" name='update_date' type="text" />
-												<div class="input-group-prepend"
-													data-target="#datetimepicker-search-0-2"
-													data-toggle="datetimepicker">
-													<div class="input-group-text"><i
-															class="far fa-calendar-alt"></i></div>
-												</div>
-											</div>
-										</div>
-									</div>
-									</div>
+
 									<div class="form-group row ">
 										<div class="col-md-4 mx-auto">
 											<!-- <button type="submit" class="btn btn-primary btn-block">新規作成</button> -->
@@ -170,30 +75,38 @@
 				<div class="card text-dark w-100 mx-auto">
 					<div class="card-body">
 						<div class="inline-block">
-							<button type="button" class="inline-block btn btn-info btn-g" data-toggle="modal"
-								data-target="#modal_create">新規作成</button>
-							<button type="button" class="inline-block btn btn-info btn-g" onclick="get_data_for_modal('edit')">編集</button>
-							<button type="button" class="inline-block btn btn-info btn-g" data-toggle="modal"
-								data-target="#modal-detail">詳細</button>
-							<button type="button" class="inline-block btn btn-info btn-g" onclick="get_data_for_modal('delete')">削除</button>
-							<button type="button" class="inline-block btn btn-info btn-g" onclick="get_name_model()">エクスポート</button>
+							<button type="button" id="btn_create_main" class="inline-block btn btn-info btn-g" data-toggle="modal"
+								data-target="#modal_show" onclick="modal_create()">新規作成</button>
+							<button type="button" id="btn_edit_main" class="inline-block btn btn-info btn-g" data-toggle="modal" data-target="#modal_show" onclick="get_data_for_modal('edit')">編集</button>
+							{% comment %} <button type="button" class="inline-block btn btn-info btn-g" data-toggle="modal"
+								data-target="#modal-detail">詳細</button> {% endcomment %}
+							<button type="button" id="btn_delete_main" class="inline-block btn btn-info btn-g" data-toggle="modal" data-target="#modal_show" onclick="get_data_for_modal('delete')">削除</button>
+							<button type="button" id="btn_export_main" class="inline-block btn btn-info btn-g" data-toggle="modal" data-target="#modal_show" onclick="get_name_model()">エクスポート</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<!-- モーダルウィンドウ -->
+		<!-- DataTable -->
+		<div class="container">
+    		<div class="row">
+        		<div class="col-12">
+            		<table id="search_list" class="table table-striped table-bordered nowrap" cellspacing="0"
+                   		width="100%"></table>
+        		</div>
+    		</div>
+		</div>	
 
 		<!-- 新規作成モーダル -->
-		<div class="modal fade" data-backdrop='static' id="modal_create" tabindex="-1" role="dialog" aria-labelledby="modal-create-label"
+		<div class="modal fade" data-backdrop='static' id="modal_show" tabindex="-1" role="dialog" aria-labelledby="modal-create-label"
 			aria-hidden="true">
 	
 			<div class="modal-dialog modal-dialog-centered modal-xl text-center" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="modal-create-label"><i class="far fa-edit"></i> 新規作成画面</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clear_html('form_modal'), search_event();"> <span
 								aria-hidden="true">&times;</span> </button>
 					</div>
 
@@ -201,118 +114,19 @@
 						<div class="container">
 							<div class="card text-center text-dark w-100 mx-auto" id="">
 								<div class="card-body mx-auto mt-3">
-									<form id="form_modal_create" onsubmit="create_event()">
-										<div class="form-group row">
-											<label for="name" class="col-md-3 col-form-label">
-												保険種別TCD
-											</label>
-											<div class="col-md-3">
-												<input class="form-control" name='insurance_category_tcd' type="text"/>
-											</div>
-											<label for="name" class="col-md-3 col-form-label">
-												保険者法別番号
-											</label>
-											<div class="col-md-3">
-												<input class="form-control" name='insurer_law_number' type="text"/>
-											</div>
-										</div>
-										<div class="form-group row">											
-											<label for="name" class="col-md-3 col-form-label">
-												保険者都道府県番号
-											</label>
-											<div class="col-md-3">
-												<input class="form-control" name='insurer_pref_number' type="text"/>
-											</div>
-											<label for="name" class="col-md-3 col-form-label">
-												電話番号
-											</label>
-											<div class="col-md-3">
-												<input class="form-control" name='phone_number' type="text"/>
-											</div>
-										</div>
-										<div class="form-group row">
-											<label for="name" class="col-md-3 col-form-label">
-												保険者番号
-											</label>
-											<div class="col-md-3">
-												<input class="form-control" name='insurer_number' type="text" />
-											</div>
-											<label for="name" class="col-md-3 col-form-label">
-												全柔協保険者番号
-											</label>
-											<div class="col-md-3">
-											</div>
-										</div>
-										<div class="form-group row">
-											<label for="name" class="col-md-3 col-form-label">
-												作成者
-											</label>
-											<div class="col-md-3">
-												<input class="form-control" name='create_user' type="text"/>
-											</div>
-										</div>
-										<div class="form-group row">
-											<label for="name" class="col-md-3 col-form-label">
-												作成日
-											</label>
-											<div class="col-md-4">
-												<div class="input-group date datetimepicker-master"
-													id="datetimepicker-search-1-1" data-target-input="nearest">
-													<input class="form-control datetimepicker-input"
-														data-target="#datetimepicker-search-1-1" name='create_date' type="text"/>
-													<div class="input-group-prepend"
-														data-target="#datetimepicker-search-1-1"
-														data-toggle="datetimepicker">
-														<div class="input-group-text"><i
-																class="fa fa-calendar-alt"></i></div>
-													</div>
-												</div>
-											</div>
-											
-										</div>
-										<div class="form-group row">
-											<label for="name" class="col-md-3 col-form-label">
-												更新者
-											</label>
-											<div class="col-md-3">
-												<input class="form-control" id="name" name='update_user' type="text" />
-											</div>
-										</div>
-										<div class="form-group row">
-											<label for="name" class="col-md-3 col-form-label">
-												更新日
-											</label>
-											<div class="col-md-4">
-												<div class="input-group date datetimepicker-master"
-													id="datetimepicker-search-2-1" data-target-input="nearest">
-													<input class="form-control datetimepicker-input"
-														data-target="#datetimepicker-search-2-1" name='update_date' type="text" />
-													<div class="input-group-prepend"
-														data-target="#datetimepicker-search-2-1"
-														data-toggle="datetimepicker">
-														<div class="input-group-text"><i
-																class="fa fa-calendar-alt"></i></div>
-													</div>
-												</div>
-											</div>
-								
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-info" data-toggle="modal" id='btn_create' onclick="create_event();"> 実行</button>
-											<button type="button" class="btn btn-info" data-dismiss="modal" onclick="search_event();">閉じる</button>
-										</div>
+									<form id="form_modal">
 									</form>
 								</div>
 							</div>
 						</div>
 					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-toggle="modal" id='btn_modal_action' onclick=""> 実行</button>
+						<button type="button" class="btn btn-info" data-dismiss="modal" onclick="clear_html('form_modal'), search_event();">閉じる</button>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="container">
-		<div class="panel-body">
-			<table class="table table-bordered table-hover compact display" id="search_list" style="width: 100;"></table>
-		</div>
 		</div>
 		
 		<!-- フッター -->
@@ -327,6 +141,8 @@
 	</main>
 
 	<!-- js読み込み -->
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+		integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous">;</script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
 		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">;
 	</script>
