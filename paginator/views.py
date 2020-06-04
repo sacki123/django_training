@@ -4,6 +4,9 @@ from .models import Customer
 # Create your views here.
 def listing(request):
     customer_list = Customer.objects.all()
+    n = 'name'
+    for record in customer_list:
+        t = record.__dict__.get(n)
     paginator = Paginator(customer_list,5)
     page_number = request.GET.get('page')
     try:

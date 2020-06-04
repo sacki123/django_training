@@ -181,9 +181,9 @@ class Command(BaseCommand):
                             if last_name_kana != record.__dict__.get(table_col_name.lower()):
                                 break
                         setattr(record,table_col_name.lower(),last_name_kana)
-                if be_replaced.get("address_pref_tcd"):
-                    for table_col_name in be_replaced.get("address_pref_tcd"):
-                        setattr(record,table_col_name.lower(),'')
+                # if be_replaced.get("address_pref_tcd"):
+                #     for table_col_name in be_replaced.get("address_pref_tcd"):
+                #         setattr(record,table_col_name.lower(),'')
                 if be_replaced.get("address_city"):
                     for table_col_name in be_replaced.get("address_city"):
                         while True:
