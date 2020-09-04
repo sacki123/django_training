@@ -1,0 +1,124 @@
+﻿apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  annotations:
+    field.cattle.io/creatorId: user-nz878
+    field.cattle.io/publicEndpoints: '[{"addresses":["172.16.253.155"],"port":32767,"protocol":"TCP","serviceName":"zen-stg:db-mariadb-nodeport","allNodes":true}]'
+  creationTimestamp: "2019-03-07T09:09:18Z"
+  generation: 71
+  labels:
+    cattle.io/creator: norman
+    workload.user.cattle.io/workloadselector: statefulSet-zen-stg-db-mariadb
+  name: db-mariadb
+  namespace: zen-stg
+  resourceVersion: "87176565"
+  selfLink: /apis/apps/v1beta2/namespaces/zen-stg/statefulsets/db-mariadb
+  uid: b00c1523-40b8-11e9-b9e9-000c293d92a0
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: statefulSet-zen-stg-db-mariadb
+  serviceName: db-mariadb
+  template:
+    metadata:
+      annotations:
+        cattle.io/timestamp: "2020-08-03T05:13:13Z"
+        field.cattle.io/ports: '[[{"containerPort":3306,"dnsName":"db-mariadb","kind":"ClusterIP","name":"3306tcp02","protocol":"TCP","sourcePort":0},{"containerPort":3306,"dnsName":"db-mariadb-nodeport","kind":"NodePort","name":"3306tcp327671","protocol":"TCP","sourcePort":32767}]]'
+        workload.cattle.io/state: '{"emp0ZXM2MjE=":"c-jsvxz:m-7147ae20d16d"}'
+      creationTimestamp: null
+      labels:
+        workload.user.cattle.io/workloadselector: statefulSet-zen-stg-db-mariadb
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_DATABASE
+          value: zen
+        - name: MYSQL_USER
+          value: zen
+        - name: TZ
+          value: Asia/Tokyo
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_PASSWORD
+              name: secret-db-mariadb
+              optional: false
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: secret-db-mariadb
+              optional: false
+        image: ken-toitsu-registry.ad.zenjukyo.gr.jp:80/zen/db-mariadb:v1.0.0
+        imagePullPolicy: Always
+        name: db-mariadb
+        ports:
+        - containerPort: 3306
+          name: 3306tcp02
+          protocol: TCP
+        - containerPort: 3306
+          name: 3306tcp327671
+          protocol: TCP
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+        - mountPath: /var/log/mysql
+          name: vol-db-mariadb-logs
+        - mountPath: /var/lib/mysql
+          name: vol-db-mariadb-data
+        - mountPath: /etc/mysql/conf.d/mariadb.cnf
+          name: cm-db-mariadb-mycnf
+          subPath: mariadb.cnf
+        - mountPath: /opt/services/data-migration/files
+          name: vol-db-mariadb-files
+      dnsPolicy: ClusterFirst
+      nodeName: zjtes621
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 755
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /var/log/db-mariadb
+          type: DirectoryOrCreate
+        name: vol-db-mariadb-logs
+      - hostPath:
+          path: /export/db-mariadb/data
+          type: ""
+        name: vol-db-mariadb-data
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: mariadb.cnf
+            path: mariadb.cnf
+          name: db-mariadb-mariadbcnf
+          optional: false
+        name: cm-db-mariadb-mycnf
+      - hostPath:
+          path: /export/db-mariadb/files
+          type: DirectoryOrCreate
+        name: vol-db-mariadb-files
+  updateStrategy:
+    type: RollingUpdate
+status:
+  collisionCount: 0
+  currentReplicas: 1
+  currentRevision: db-mariadb-5bcbc7689b
+  observedGeneration: 71
+  readyReplicas: 1
+  replicas: 1
+  updateRevision: db-mariadb-5bcbc7689b
+  updatedReplicas: 1

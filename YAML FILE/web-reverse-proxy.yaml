@@ -1,0 +1,104 @@
+﻿apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "106"
+    field.cattle.io/creatorId: user-nz878
+    field.cattle.io/publicEndpoints: '[{"addresses":["172.16.253.155"],"port":443,"protocol":"HTTPS","serviceName":"zen-stg:ingress-bf1f043c8b21090124ef3d28bec64387","ingressName":"zen-stg:lb-web-revpxy","hostname":"ken-toitsu-unification.ad.zenjukyo.gr.jp","allNodes":true}]'
+  creationTimestamp: "2019-03-07T09:19:38Z"
+  generation: 132
+  labels:
+    cattle.io/creator: norman
+    workload.user.cattle.io/workloadselector: deployment-zen-stg-web-reverse-proxy
+  name: web-reverse-proxy
+  namespace: zen-stg
+  resourceVersion: "92347852"
+  selfLink: /apis/apps/v1beta2/namespaces/zen-stg/deployments/web-reverse-proxy
+  uid: 21e7cd6e-40ba-11e9-b9e9-000c293d92a0
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-zen-stg-web-reverse-proxy
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        cattle.io/timestamp: "2020-08-31T10:09:52Z"
+        field.cattle.io/ports: '[[{"containerPort":80,"dnsName":"web-reverse-proxy","kind":"ClusterIP","name":"80tcp02","protocol":"TCP","sourcePort":0}]]'
+        workload.cattle.io/state: '{"emp0ZXMzMjE=":"c-jsvxz:m-cec9f71205c9"}'
+      creationTimestamp: null
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-zen-stg-web-reverse-proxy
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: Asia/Tokyo
+        image: ken-toitsu-registry.ad.zenjukyo.gr.jp:80/zen/web-reverse-proxy:v1.0.1
+        imagePullPolicy: Always
+        name: web-reverse-proxy
+        ports:
+        - containerPort: 80
+          name: 80tcp02
+          protocol: TCP
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+        - mountPath: /var/log/nginx
+          name: vol-web-reverse-proxy-logs
+        - mountPath: /etc/nginx/nginx.conf
+          name: cm-web-revpxy-nginxconf
+          subPath: nginx.conf
+      dnsPolicy: ClusterFirst
+      nodeName: zjtes321
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /var/log/web-reverse-proxy
+          type: DirectoryOrCreate
+        name: vol-web-reverse-proxy-logs
+      - configMap:
+          defaultMode: 256
+          items:
+          - key: nginx.conf
+            path: nginx.conf
+          name: web-revpxy-nginxconf
+          optional: false
+        name: cm-web-revpxy-nginxconf
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2019-05-07T07:14:25Z"
+    lastUpdateTime: "2020-08-31T10:09:58Z"
+    message: ReplicaSet "web-reverse-proxy-7bcdf49f65" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2020-09-02T01:14:18Z"
+    lastUpdateTime: "2020-09-02T01:14:18Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 132
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
