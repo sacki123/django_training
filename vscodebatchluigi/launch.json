@@ -10,7 +10,7 @@
             "request": "attach",
             "pathMappings": [
                 {
-                    "localRoot": "${workspaceFolder}/src/bbin/printingservice",
+                    "localRoot": "${workspaceFolder}/bbin/printingservice",
                     "remoteRoot": "/opt/services/report/src/bbin/printingservice"
                 }
             ],
