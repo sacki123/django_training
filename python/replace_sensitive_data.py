@@ -232,9 +232,20 @@ class Command(BaseCommand):
     def drop_trigger(self, triggers_name):
         with connection.cursor() as cursor:
             for trigger_name in triggers_name:
-                print("DROP TRIGGER: "+trigger_name)
-                cursor.execute("DROP TRIGGER "+trigger_name)
+                print("DROP TRIGGER: " + trigger_name)
+                cursor.execute("DROP TRIGGER " + trigger_name)
     
+    # def check_data_string(self, data):
+    #     if (data == None):
+    #         return None
+    #     else:
+    #         while True:
+    #             fake_str = fake.name.first.kanji
+    #             if fake_str != data:
+    #                 break
+    #         return fake_str    
+            
+
     # @transaction.atomic
     def replace_data(self, records, be_replaced):
         for record in records:
@@ -243,6 +254,9 @@ class Command(BaseCommand):
             if be_replaced.get("first_name"):
                 for table_col_name in be_replaced.get("first_name"):
                     while True:
+                        first_name = record.__dict__.get(table_col_name.lower())
+                        if first_name == None or first_name == "":
+                            break
                         first_name = fake.name.first.kanji
                         if first_name != record.__dict__.get(table_col_name.lower()):
                             break
@@ -250,6 +264,9 @@ class Command(BaseCommand):
             if be_replaced.get("last_name"):
                 for table_col_name in be_replaced.get("last_name"):
                     while True:
+                        last_name = record.__dict__.get(table_col_name.lower())
+                        if last_name == None or last_name == "":
+                            break
                         last_name = fake.name.last.kanji
                         if last_name != record.__dict__.get(table_col_name.lower()):
                             break
@@ -257,6 +274,9 @@ class Command(BaseCommand):
             if be_replaced.get("first_name_kana"):
                 for table_col_name in be_replaced.get("first_name_kana"):
                     while True:
+                        first_name_kana = record.__dict__.get(table_col_name.lower())
+                        if first_name_kana == None or first_name_kana == "":
+                            break
                         first_name_kana = fake.name.first.katakana
                         if first_name_kana != record.__dict__.get(table_col_name.lower()):
                             break
@@ -264,6 +284,9 @@ class Command(BaseCommand):
             if be_replaced.get("last_name_kana"):
                 for table_col_name in be_replaced.get("last_name_kana"):
                     while True:
+                        last_name_kana = record.__dict__.get(table_col_name.lower())
+                        if last_name_kana == None or last_name_kana == "":
+                            break
                         last_name_kana = fake.name.last.katakana
                         if last_name_kana != record.__dict__.get(table_col_name.lower()):
                             break
@@ -274,6 +297,9 @@ class Command(BaseCommand):
             if be_replaced.get("address_city"):
                 for table_col_name in be_replaced.get("address_city"):
                     while True:
+                        address_city = record.__dict__.get(table_col_name.lower())
+                        if address_city == None or address_city == "":
+                            break
                         address_city = f.city()
                         if address_city != record.__dict__.get(table_col_name.lower()):
                             break
@@ -281,6 +307,9 @@ class Command(BaseCommand):
             if be_replaced.get("address_town"):
                 for table_col_name in be_replaced.get("address_town"):
                     while True:
+                        address_town = record.__dict__.get(table_col_name.lower())
+                        if address_town == None or address_town == "":
+                            break
                         address_town = f.town()
                         if address_town != record.__dict__.get(table_col_name.lower()):
                             break
@@ -288,6 +317,9 @@ class Command(BaseCommand):
             if be_replaced.get("address_street"):
                 for table_col_name in be_replaced.get("address_street"):
                     while True:
+                        address_street = record.__dict__.get(table_col_name.lower())
+                        if address_street == None or address_street == "":
+                            break
                         address_street = f.chome()
                         if address_street != record.__dict__.get(table_col_name.lower()):
                             break
@@ -295,19 +327,31 @@ class Command(BaseCommand):
             if be_replaced.get("zip_code"):
                 for table_col_name in be_replaced.get("zip_code"):
                     while True:
+                        zip_code = record.__dict__.get(table_col_name.lower())
+                        if zip_code == None or zip_code  == "":
+                            break
                         zip_code = f.zipcode()
                         if zip_code != record.__dict__.get(table_col_name.lower()):
                             break
                     setattr(record,table_col_name.lower(),zip_code)
             if be_replaced.get("phone_number"):
                 for table_col_name in be_replaced.get("phone_number"):
-                    setattr(record,table_col_name.lower(),'000-0000-0000')
+                    while True:
+                        phone_number = record.__dict__.get(table_col_name.lower())
+                        if phone_number == None or phone_number  == "":
+                            break
+                        phone_number = '000-0000-0000'
+                        break
+                    setattr(record,table_col_name.lower(),phone_number)
             if be_replaced.get("fax_number"):
                 for table_col_name in be_replaced.get("fax_number"):
                     setattr(record,table_col_name.lower(),'')
             if be_replaced.get("name"):
                 for table_col_name in be_replaced.get("name"):
                     while True:
+                        name = record.__dict__.get(table_col_name.lower())
+                        if name == None or name  == "":
+                            break
                         name = Gimei().name.hiragana
                         if name != record.__dict__.get(table_col_name.lower()):
                             break
@@ -315,6 +359,9 @@ class Command(BaseCommand):
             if be_replaced.get("name_kana"):
                 for table_col_name in be_replaced.get("name_kana"):
                     while True:
+                        name_kana = record.__dict__.get(table_col_name.lower())
+                        if name_kana == None or name_kana  == "":
+                            break
                         name_kana = Gimei().name.katakana
                         if name_kana != record.__dict__.get(table_col_name.lower()):
                             break
@@ -327,13 +374,28 @@ class Command(BaseCommand):
                     setattr(record,table_col_name.lower(),'')
             if be_replaced.get("birth_date"):
                 for table_col_name in be_replaced.get("birth_date"):
-                    setattr(record,table_col_name.lower(),datetime.datetime.now())
+                    while True:
+                        birth_date = record.__dict__.get(table_col_name.lower())
+                        if birth_date == None or birth_date  == "":
+                            break
+                        birth_date = datetime.datetime.now()
+                        break
+                    setattr(record,table_col_name.lower(),birth_date)
             if be_replaced.get("birthday"):
                 for table_col_name in be_replaced.get("birthday"):
-                    setattr(record,table_col_name.lower(),datetime.datetime.now())         
+                    while True:
+                        birth_day = record.__dict__.get(table_col_name.lower())
+                        if birth_day == None or birth_day  == "":
+                            break
+                        birth_day = datetime.datetime.now()
+                        break
+                    setattr(record,table_col_name.lower(),birth_day)         
             if be_replaced.get("insured_number"):
                 for table_col_name in be_replaced.get("insured_number"):
                     while True:
+                        insured_number = record.__dict__.get(table_col_name.lower())
+                        if insured_number == None or insured_number  == "":
+                            break
                         insured_number = f.random_int(12345678, 87654321)
                         if insured_number != record.__dict__.get(table_col_name.lower()):
                             break
@@ -341,17 +403,38 @@ class Command(BaseCommand):
             if be_replaced.get("recipient_number"):
                 for table_col_name in be_replaced.get("recipient_number"):
                     while True:
+                        recipient_number = record.__dict__.get(table_col_name.lower())
+                        if recipient_number == None or recipient_number  == "":
+                            break
                         recipient_number = f.random_int(12345678, 87654321)
                         if recipient_number != record.__dict__.get(table_col_name.lower()):
                             break
                     setattr(record,table_col_name.lower(),recipient_number)    
             if be_replaced.get("introducer_information"):
                 for table_col_name in be_replaced.get("introducer_information"):
-                    setattr(record,table_col_name.lower(),fake.name.last.kanji + fake.name.first.kanji)
+                    while True:
+                        introducer_information = record.__dict__.get(table_col_name.lower())
+                        if introducer_information == None or introducer_information  == "":
+                            break
+                        introducer_information = fake.name.last.kanji + fake.name.first.kanji
+                        break
+                    setattr(record,table_col_name.lower(),introducer_information)
             if be_replaced.get("create_user"):
                 for table_col_name in be_replaced.get("create_user"):
-                    setattr(record,table_col_name.lower(),fake.name.last.kanji + fake.name.first.kanji)
+                    while True:
+                        create_user = record.__dict__.get(table_col_name.lower())
+                        if create_user == None or create_user  == "":
+                            break
+                        create_user = fake.name.last.kanji + fake.name.first.kanji
+                        break
+                    setattr(record,table_col_name.lower(),create_user)
             if be_replaced.get("update_user"):
                 for table_col_name in be_replaced.get("update_user"):
-                    setattr(record,table_col_name.lower(),fake.name.last.kanji + fake.name.first.kanji)            
+                    while True:
+                        update_user = record.__dict__.get(table_col_name.lower())
+                        if update_user == None or update_user  == "":
+                            break
+                        update_user = fake.name.last.kanji + fake.name.first.kanji
+                        break
+                    setattr(record,table_col_name.lower(),update_user)            
             record.save()                    
