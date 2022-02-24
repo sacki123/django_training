@@ -3,7 +3,7 @@ markdown
 pytz
 tqdm
 requests
-django==2.0.6
+django==2.2.24
 ldap3
 dbfpy
 reportlab
